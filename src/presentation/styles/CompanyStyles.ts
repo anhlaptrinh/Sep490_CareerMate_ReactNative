@@ -1,0 +1,327 @@
+import { StyleSheet, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
+
+export const companyStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  section: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#F5F5F5',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#000000',
+    marginBottom: 15,
+  },
+  keywordContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  keywordTag: {
+    backgroundColor: '#E8E8E8',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  keywordText: {
+    fontSize: 14,
+    color: '#333333',
+  },
+  spotlightScroll: {
+    paddingRight: 16,
+  },
+  spotlightCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  spotlightImage: {
+    width: '100%',
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  spotlightOverlay: {
+    padding: 16,
+  },
+  spotlightLogoContainer: {
+    position: 'absolute',
+    top: -30,
+    left: 16,
+    width: 60,
+    height: 60,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  logoPlaceholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  spotlightName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#FF6B35',
+    marginTop: 35,
+    marginBottom: 8,
+  },
+  spotlightDescription: {
+    fontSize: 13,
+    color: '#666666',
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  spotlightFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  spotlightJobCount: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  spotlightJobText: {
+    fontSize: 13,
+    color: '#666666',
+  },
+  spotlightTags: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  spotlightTag: {
+    backgroundColor: '#E8E8E8',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  spotlightTagText: {
+    fontSize: 11,
+    color: '#666666',
+  },
+  paginationDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 15,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#D0D0D0',
+  },
+  activeDot: {
+    backgroundColor: '#FF6B35',
+    width: 24,
+  },
+  companyListHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#F5F5F5',
+  },
+  companyListTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#000000',
+  },
+  recruitingToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  recruitingText: {
+    fontSize: 14,
+    color: '#666666',
+  },
+  filterSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#F5F5F5',
+  },
+  filterRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  filterButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    gap: 8,
+  },
+  filterText: {
+    fontSize: 13,
+    color: '#333333',
+  },
+  filterSubText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#999999',
+  },
+  companyList: {
+    paddingHorizontal: 16,
+    gap: 10,
+  },
+  companyCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  companyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  companyLogo: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    backgroundColor: '#F0F9FA',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bookmarkButton: {
+    padding: 4,
+  },
+  companyName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#000000',
+    marginBottom: 10,
+  },
+  companyTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  companyTag: {
+    backgroundColor: '#E8E8E8',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  companyTagText: {
+    fontSize: 12,
+    color: '#666666',
+  },
+  companyInfo: {
+    gap: 8,
+  },
+  companyInfoRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  companyInfoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  companyInfoText: {
+    fontSize: 13,
+    color: '#666666',
+    flex: 1,
+  },
+  seeMoreButton: {
+    marginHorizontal: 16,
+    marginVertical: 20,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3DD5DC',
+  },
+  seeMoreButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#3DD5DC',
+  },
+  listHotContainer: {
+    gap: 15,
+  },
+  listHotCard: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    height: 150,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  listHotImage: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listHotOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    padding: 16,
+  },
+  listHotTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  listHotCount: {
+    fontSize: 13,
+    color: '#FFFFFF',
+  },
+});
