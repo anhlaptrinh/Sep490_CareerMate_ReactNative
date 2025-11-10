@@ -49,7 +49,7 @@ export default function ProfileScreen() {
           <Text style={styles.welcomeText}>Welcome to CareerMate</Text>
           <TouchableOpacity 
             style={styles.authButton}
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Auth', { screen: 'Login' })}
           >
             <Text style={styles.authButtonText}>SIGN UP / SIGN IN</Text>
           </TouchableOpacity>

@@ -66,7 +66,7 @@ export default function AppHeader({
         onClose={() => setMenuVisible(false)}
         isLoggedIn={isLoggedIn}
         userName={userName}
-        onNavigateToLogin={() => navigation.navigate('Login')}
+        onNavigateToLogin={() => navigation.navigate('Auth', { screen: 'Login' })}
       />
 
       {/* Sticky Search Bar */}
@@ -169,15 +169,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    gap: 8,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    gap: 6,
   },
   stickySearchInput: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 13,
     color: '#333333',
+    paddingVertical: 0,
   },
   header: {
     flexDirection: 'row',
@@ -235,9 +236,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -245,11 +246,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   searchIcon: {
-    marginRight: 10,
+    marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 14,
     color: '#333333',
+    paddingVertical: 0,
   },
 });

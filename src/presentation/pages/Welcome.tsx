@@ -144,7 +144,7 @@ export default function WelcomeScreen() {
         {/* Explore the App Button */}
         <TouchableOpacity 
           style={styles.exploreButton}
-          onPress={() => navigation.navigate('MainTabs')}
+          onPress={() => navigation.navigate('MainApp')}
         >
           <Text style={styles.exploreButtonText}>Explore the app</Text>
         </TouchableOpacity>

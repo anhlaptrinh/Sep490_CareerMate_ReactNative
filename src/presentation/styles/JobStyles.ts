@@ -18,6 +18,7 @@ export const jobStyles = StyleSheet.create({
     backgroundColor: '#0099FF',
     borderRadius: 16,
     padding: 20,
+    marginTop: 10,
   },
   bannerTitle: {
     fontSize: 22,

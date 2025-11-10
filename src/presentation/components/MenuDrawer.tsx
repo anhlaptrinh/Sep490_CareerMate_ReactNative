@@ -77,6 +77,7 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
       transparent
       animationType="none"
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
       <View style={styles.container}>
         <Animated.View 
@@ -84,7 +85,6 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
             styles.backdrop,
             { opacity: backdropOpacity }
           ]}
-          pointerEvents={visible ? 'auto' : 'none'}
         >
           <TouchableOpacity 
             style={StyleSheet.absoluteFill}
@@ -165,9 +165,22 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   drawer: {
@@ -176,12 +189,14 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: screenWidth * 0.85,
+    height: '100%',
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 16,
+    zIndex: 1000,
   },
   drawerHeader: {
     flexDirection: 'row',
