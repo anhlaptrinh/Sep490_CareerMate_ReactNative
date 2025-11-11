@@ -7,6 +7,7 @@ import CompanyScreen from '../pages/Company';
 import BlogScreen from '../pages/Blog';
 import ToolsScreen from '../pages/Tools';
 import ProfileScreen from '../pages/Profile';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,9 @@ const Tab = createBottomTabNavigator();
  * Bao gồm: Jobs, Companies, Blog, Tools, Profile
  */
 export default function InAppNavigation() {
+  // Lấy thông tin "vùng an toàn" (safe area) của thiết bị hiện tại.
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -50,9 +54,9 @@ export default function InAppNavigation() {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E0E0E0',
-          paddingBottom: Platform.OS === 'ios' ? 20 : 8,
+          paddingBottom: insets.bottom || 10,
+          height: 60 + insets.bottom,
           paddingTop: 8,
-          height: Platform.OS === 'ios' ? 85 : 60,
           elevation: 8,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
@@ -66,28 +70,28 @@ export default function InAppNavigation() {
         },
       })}
     >
-      <Tab.Screen 
-        name="JobTab" 
+      <Tab.Screen
+        name="JobTab"
         component={JobScreen}
         options={{ tabBarLabel: 'Jobs' }}
       />
-      <Tab.Screen 
-        name="CompanyTab" 
+      <Tab.Screen
+        name="CompanyTab"
         component={CompanyScreen}
         options={{ tabBarLabel: 'Companies' }}
       />
-      <Tab.Screen 
-        name="BlogTab" 
+      <Tab.Screen
+        name="BlogTab"
         component={BlogScreen}
         options={{ tabBarLabel: 'Blog' }}
       />
-      <Tab.Screen 
-        name="ToolsTab" 
+      <Tab.Screen
+        name="ToolsTab"
         component={ToolsScreen}
         options={{ tabBarLabel: 'Tools' }}
       />
-      <Tab.Screen 
-        name="ProfileTab" 
+      <Tab.Screen
+        name="ProfileTab"
         component={ProfileScreen}
         options={{ tabBarLabel: 'Account' }}
       />
