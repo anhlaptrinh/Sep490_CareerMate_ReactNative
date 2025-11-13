@@ -8,17 +8,38 @@ import {
   TouchableOpacity,
   Switch,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { profileStyles } from '../styles/ProfileStyles';
+import { useAuthStore } from '../state/useAuthStore';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
+  const { isAuthenticated, user, logout } = useAuthStore();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [jobSearchEnabled, setJobSearchEnabled] = useState(false);
   const [autoApplyEnabled, setAutoApplyEnabled] = useState(false);
   const styles = profileStyles;
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            await logout();
+            navigation.replace('Auth', { screen: 'Welcome' });
+          },
+        },
+      ]
+    );
+  };
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -46,13 +67,35 @@ export default function ProfileScreen() {
         {/* About Me Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About Me</Text>
-          <Text style={styles.welcomeText}>Welcome to CareerMate</Text>
-          <TouchableOpacity 
-            style={styles.authButton}
-            onPress={() => navigation.navigate('Auth', { screen: 'Login' })}
-          >
-            <Text style={styles.authButtonText}>SIGN UP / SIGN IN</Text>
-          </TouchableOpacity>
+          {isAuthenticated ? (
+            <>
+              <View style={styles.userInfoContainer}>
+                <View style={styles.userAvatar}>
+                  <Ionicons name="person" size={40} color="#FFFFFF" />
+                </View>
+                <View style={styles.userDetails}>
+                  <Text style={styles.userFullName}>{user?.fullname || 'User'}</Text>
+                  <Text style={styles.userEmail}>{user?.email || ''}</Text>
+                </View>
+              </View>
+              <TouchableOpacity 
+                style={[styles.authButton, { backgroundColor: '#FF6B6B' }]}
+                onPress={handleLogout}
+              >
+                <Text style={styles.authButtonText}>LOGOUT</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.welcomeText}>Welcome to CareerMate</Text>
+              <TouchableOpacity 
+                style={styles.authButton}
+                onPress={() => navigation.navigate('Auth', { screen: 'Login' })}
+              >
+                <Text style={styles.authButtonText}>SIGN UP / SIGN IN</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {/* Settings Section */}

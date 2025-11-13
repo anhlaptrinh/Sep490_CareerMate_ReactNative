@@ -8,19 +8,64 @@ import {
   Image,
   ScrollView,
   StatusBar,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons, FontAwesome, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { loginStyles } from '../styles/LoginStyles';
+import { useAuthStore } from '../state/useAuthStore';
 
 export default function LoginScreen() {
   const navigation = useNavigation<any>();
+  const { login, isLoading, error, clearError } = useAuthStore();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const styles = loginStyles;
+
+  const handleBack = () => {
+    clearError();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('Welcome');
+    }
+  };
+
+  const handleLogin = async () => {
+    // Clear previous error
+    clearError();
+    
+    // Validation
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    try {
+      await login(email, password);
+      // On success, navigate to main app
+      navigation.replace('MainApp');
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Invalid credentials';
+      
+      // Provide more specific error messages
+      if (errorMessage.includes('timeout')) {
+        Alert.alert(
+          'Connection Error', 
+          'Cannot connect to server. Please check:\n\n1. API URL in .env file\n2. Server is running\n3. Network connection'
+        );
+      } else if (errorMessage.includes('Network Error')) {
+        Alert.alert('Network Error', 'Please check your internet connection');
+      } else {
+        Alert.alert('Login Failed', errorMessage);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +74,7 @@ export default function LoginScreen() {
       {/* Back Button */}
       <TouchableOpacity 
         style={styles.backButton}
-        onPress={() => navigation.goBack()}
+        onPress={handleBack}
       >
         <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
       </TouchableOpacity>
@@ -114,9 +159,14 @@ export default function LoginScreen() {
           {/* Login Button */}
           <TouchableOpacity 
             style={styles.loginButton}
-            onPress={() => navigation.navigate('MainApp')}
+            onPress={handleLogin}
+            disabled={isLoading}
           >
-            <Text style={styles.loginButtonText}>Login</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.loginButtonText}>Login</Text>
+            )}
           </TouchableOpacity>
 
           {/* Or Continue With */}

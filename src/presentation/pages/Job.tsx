@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CompanyCard from '../components/CompanyCard';
 import AppHeader from '../components/AppHeader';
 import { jobStyles } from '../styles/JobStyles';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -21,6 +22,16 @@ export default function JobScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const scrollY = useRef(new Animated.Value(0)).current;
   const styles = jobStyles;
+  const withAuth = useRequireAuth();
+
+  // Handler functions with auth protection
+  const handleBookmarkCompany = withAuth((companyId: string) => {
+    // TODO: Call API to save company bookmark
+  }, 'Please login to bookmark companies');
+
+  const handleBookmarkJob = withAuth((jobId: string) => {
+    // TODO: Call API to save job bookmark
+  }, 'Please login to bookmark jobs');
 
   // Mock data for companies
   const companies = [
@@ -150,8 +161,8 @@ export default function JobScreen() {
                   description={company.description}
                   jobCount={company.jobCount}
                   tags={company.tags}
-                  onPress={() => console.log('Company pressed:', company.id)}
-                  onBookmarkPress={() => console.log('Bookmark pressed:', company.id)}
+                  onPress={() => {/* TODO: Navigate to company detail */}}
+                  onBookmarkPress={() => handleBookmarkCompany(company.id)}
                 />
               </View>
             ))}
@@ -176,7 +187,7 @@ export default function JobScreen() {
                       <Text style={styles.jobTypeText}>{job.type}</Text>
                     </View>
                   </View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleBookmarkJob(job.id)}>
                     <Ionicons name="bookmark-outline" size={22} color="#666" />
                   </TouchableOpacity>
                 </View>
