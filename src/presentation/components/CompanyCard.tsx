@@ -5,7 +5,6 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  ImageSourcePropType,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,9 +12,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface CompanyCardProps {
   companyName: string;
   description: string;
-  jobCount: number;
+  jobCount?: number;
   tags: string[];
-  logo?: ImageSourcePropType;
+  logo?: string;
   onPress?: () => void;
   onBookmarkPress?: () => void;
   isBookmarked?: boolean;
@@ -49,11 +48,17 @@ export default function CompanyCard({
         </LinearGradient>
 
         {/* Logo Badge */}
-        <View style={styles.logoBadge}>
-          <View style={styles.logoPlaceholder}>
+        {logo ? (
+          <Image
+            source={{ uri: logo }}
+            style={[styles.logoBadge, { width: 50, height: 50, borderRadius: 16 }]}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.logoBadge}>
             <Ionicons name="business" size={24} color="#3DD5DC" />
           </View>
-        </View>
+        )}
 
         {/* Company Info */}
         <View style={styles.infoContainer}>
@@ -65,10 +70,13 @@ export default function CompanyCard({
           </Text>
 
           {/* Job Count */}
-          <View style={styles.jobCountContainer}>
-            <Ionicons name="briefcase-outline" size={16} color="#666" />
-            <Text style={styles.jobCount}>{jobCount} jobs</Text>
-          </View>
+          {jobCount !== undefined &&
+            <View style={styles.jobCountContainer}>
+              <Ionicons name="briefcase-outline" size={16} color="#666" />
+              <Text style={styles.jobCount}>{jobCount} jobs</Text>
+            </View>
+          }
+
 
           {/* Tags */}
           <View style={styles.tagsContainer}>
@@ -146,7 +154,7 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: '#3DD5DC',
     marginBottom: 8,
   },
   description: {

@@ -8,6 +8,7 @@ import BlogScreen from '../pages/Blog';
 import ToolsScreen from '../pages/Tools';
 import ProfileScreen from '../pages/Profile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import JobStackNavigator from './JobStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -72,7 +73,7 @@ export default function InAppNavigation() {
     >
       <Tab.Screen
         name="JobTab"
-        component={JobScreen}
+        component={JobStackNavigator}
         options={{ tabBarLabel: 'Jobs' }}
       />
       <Tab.Screen
