@@ -87,7 +87,7 @@ export const companyStyles = StyleSheet.create({
   spotlightName: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: '#3DD5DC',
     marginTop: 35,
     marginBottom: 8,
   },
@@ -140,7 +140,7 @@ export const companyStyles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   activeDot: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#3DD5DC',
     width: 24,
   },
   companyListHeader: {
@@ -323,5 +323,77 @@ export const companyStyles = StyleSheet.create({
   listHotCount: {
     fontSize: 13,
     color: '#FFFFFF',
+  },
+  companyDetailHeader: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  companyDetailBanner: {
+    backgroundColor: '#1A1A1A',
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  companyDetailLogo: {
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    resizeMode: 'cover',
+  },
+  companyDetailContent: {
+    padding: 16,
+  },
+  companyDetailName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FF6B35',
+    marginBottom: 12,
+  },
+  companyDetailAbout: {
+    fontSize: 14,
+    color: '#666666',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  companyDetailButtonGroup: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  companyDetailButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  companyDetailButtonPrimary: {
+    backgroundColor: '#3DD5DC',
+  },
+  companyDetailButtonSecondary: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#3DD5DC',
+  },
+  companyDetailButtonText: {
+    fontWeight: '600',
+    fontSize: 12,
+  },
+  emptyJobsContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 24,
+    alignItems: 'center',
   },
 });

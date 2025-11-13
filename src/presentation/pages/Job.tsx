@@ -339,6 +339,23 @@ export default function JobScreen() {
     yearsOfExperience: job.yearsOfExperience,
   }));
 
+  // Create company data object with all jobs from that company
+  const createCompanyDataFromName = (companyName: string) => {
+    const companyJobs = fakeApiResponse.result.content.filter(
+      (job) => job.recruiterInfo.companyName === companyName
+    );
+    const firstJob = companyJobs[0]?.recruiterInfo;
+
+    return {
+      id: firstJob?.recruiterId || 0,
+      name: companyName,
+      about: firstJob?.about || '',
+      website: firstJob?.website || '',
+      logoUrl: firstJob?.logoUrl || '',
+      jobs: companyJobs,
+    };
+  };
+
   const companies = Object.values(
     jobs.reduce((acc: Record<string, any>, job) => {
       if (!acc[job.company]) {
@@ -410,7 +427,10 @@ export default function JobScreen() {
                   jobCount={company.jobCount}
                   tags={company.tags}
                   logo={company.logoUrl}
-                  onPress={() => console.log('Company pressed:', company.name)}
+                  onPress={() => {
+                    const companyData = createCompanyDataFromName(company.name);
+                    navigation.navigate('CompanyDetailScreen', { companyData });
+                  }}
                   onBookmarkPress={() => console.log('Bookmark pressed:', company.name)}
                 />
               </View>
