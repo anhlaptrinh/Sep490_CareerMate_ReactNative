@@ -28,3 +28,33 @@ export interface CandidateResponse {
   code: number;
   result: CandidateData;
 }
+
+export type JobApplicationStatus = "SUBMITTED" | "REVIEWING" | "APPROVED" | "REJECTED" | "BANNED";
+
+export interface JobApplicationData {
+  id: number;
+  jobPostingId: number;
+  jobTitle: string;
+  jobDescription: string;
+  expirationDate: string;
+  candidateId: number;
+  cvFilePath: string;
+  fullName: string;
+  phoneNumber: string;
+  preferredWorkLocation: string;
+  coverLetter: string;
+  status: JobApplicationStatus;
+  createAt: string;
+}
+
+export interface JobApplicationsResponse {
+  code: number;
+  message: string;
+  result: JobApplicationData[] | {
+    content: JobApplicationData[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}

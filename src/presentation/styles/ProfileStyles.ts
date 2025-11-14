@@ -307,5 +307,52 @@ export const profileStyles = StyleSheet.create({
     color: '#FF6B6B',
     marginTop: 6,
     marginLeft: 4,
-  }
+  },
+  jobCount: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3DD5DC',
+    backgroundColor: '#F0F9FA',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  loadMoreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    gap: 6,
+    marginTop: 8,
+  },
+  loadMoreText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3DD5DC',
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: '#CCCCCC',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  paginationButtons: {
+    gap: 12,
+    marginTop: 8,
+  },
+  showLessButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    gap: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+    marginTop: 4,
+  },
+  showLessText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666666',
+  },
 });

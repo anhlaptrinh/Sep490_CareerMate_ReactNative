@@ -9,3 +9,5 @@ export { default as CompanyCard } from './CompanyCard';
 export { default as AppHeader } from './AppHeader';
 
 export { default as MenuDrawer } from './MenuDrawer';
+
+export { AppliedJobCard } from './AppliedJobCard';

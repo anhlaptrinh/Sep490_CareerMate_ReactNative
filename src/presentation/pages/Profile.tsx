@@ -12,6 +12,7 @@ import {
   TextInput,
   ActivityIndicator,
   Image,
+  FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -21,7 +22,8 @@ import { useAuthStore } from '../state/useAuthStore';
 import { container } from '../../di/dependencies';
 import { TYPES } from '../../di/types';
 import { CandidateRepo } from '../../data/repository/candidate/CandidateRepo';
-import { Gender } from '../../domain/models/Candidate';
+import { Gender, JobApplicationData } from '../../domain/models/Candidate';
+import { AppliedJobCard } from '../components/AppliedJobCard';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
@@ -43,11 +45,30 @@ export default function ProfileScreen() {
   const [link, setLink] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  // Applied jobs states
+  const [appliedJobs, setAppliedJobs] = useState<JobApplicationData[]>([]);
+  const [loadingJobs, setLoadingJobs] = useState(false);
+  const [jobsPage, setJobsPage] = useState(0);
+  const [totalJobsPages, setTotalJobsPages] = useState(0);
+  const [activeFilter, setActiveFilter] = useState<'Applied' | 'Saved' | 'Viewed'>('Applied');
+  const JOBS_PER_PAGE = 3;
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchProfile();
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated && profileId) {
+      console.log('Triggering fetchAppliedJobs with profileId:', profileId);
+      fetchAppliedJobs();
+    }
+  }, [isAuthenticated, profileId]);
+
+  useEffect(() => {
+    console.log('appliedJobs state updated:', appliedJobs?.length ?? 'undefined');
+  }, [appliedJobs]);
 
   const fetchProfile = async () => {
     setLoading(true);
@@ -86,6 +107,87 @@ export default function ProfileScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAppliedJobs = async (page: number = 0) => {
+    if (!profileId) {
+      console.log('No profileId, skipping fetchAppliedJobs');
+      return;
+    }
+    
+    console.log('Fetching applied jobs for candidateId:', profileId, 'page:', page);
+    setLoadingJobs(true);
+    try {
+      const candidateRepo = container.get<CandidateRepo>(TYPES.CandidateRepo);
+      const response = await candidateRepo.getMyJobs(
+        parseInt(profileId),
+        'SUBMITTED',
+        page,
+        JOBS_PER_PAGE
+      );
+      
+      console.log('Applied jobs response:', response);
+      
+      if (response && response.result) {
+        // Check if result is paginated or plain array
+        const isPaginated = !Array.isArray(response.result) && 'content' in response.result;
+        
+        if (isPaginated) {
+          // API returns paginated data
+          const paginatedResult = response.result as {
+            content: JobApplicationData[];
+            page: number;
+            size: number;
+            totalElements: number;
+            totalPages: number;
+          };
+          
+          console.log('Paginated jobs:', paginatedResult.content.length, 'of', paginatedResult.totalElements);
+          
+          if (page === 0) {
+            setAppliedJobs(paginatedResult.content);
+          } else {
+            setAppliedJobs(prev => [...prev, ...paginatedResult.content]);
+          }
+          setJobsPage(paginatedResult.page);
+          setTotalJobsPages(paginatedResult.totalPages);
+        } else {
+          // API returns plain array - implement client-side pagination
+          const allJobs = response.result as JobApplicationData[];
+          console.log('Jobs array (client-side pagination):', allJobs.length, 'total');
+          
+          // Calculate pagination on client side
+          const startIndex = page * JOBS_PER_PAGE;
+          const endIndex = startIndex + JOBS_PER_PAGE;
+          const paginatedJobs = allJobs.slice(startIndex, endIndex);
+          
+          if (page === 0) {
+            setAppliedJobs(paginatedJobs);
+          } else {
+            setAppliedJobs(prev => [...prev, ...paginatedJobs]);
+          }
+          
+          setJobsPage(page);
+          setTotalJobsPages(Math.ceil(allJobs.length / JOBS_PER_PAGE));
+        }
+      }
+    } catch (error: any) {
+      console.error('Error fetching applied jobs:', error);
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
+  const handleLoadMoreJobs = () => {
+    if (!loadingJobs && jobsPage < totalJobsPages - 1) {
+      fetchAppliedJobs(jobsPage + 1);
+    }
+  };
+
+  const handleShowLess = () => {
+    // Reset to first page
+    setJobsPage(0);
+    fetchAppliedJobs(0);
   };
 
   const formatDate = (date: Date): string => {
@@ -224,7 +326,7 @@ export default function ProfileScreen() {
                 style={[styles.authButton, { backgroundColor: '#FF6B6B' }]}
                 onPress={handleLogout}
               >
-                <Text style={styles.authButtonText}>LOGOUT</Text>
+                <Text style={[styles.authButtonText, { color: '#FFFFFF' }]}>LOGOUT</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -432,29 +534,117 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Applied Jobs</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeMoreText}>See More</Text>
-            </TouchableOpacity>
+            {appliedJobs && appliedJobs.length > 0 && (
+              <Text style={styles.jobCount}>
+                {appliedJobs.length} {appliedJobs.length === 1 ? 'Job' : 'Jobs'}
+              </Text>
+            )}
           </View>
 
           {/* Filter Tabs */}
           <View style={styles.filterTabs}>
-            <TouchableOpacity style={[styles.filterTab, styles.activeTab]}>
-              <Text style={styles.activeTabText}>Applied</Text>
+            <TouchableOpacity 
+              style={[styles.filterTab, activeFilter === 'Applied' && styles.activeTab]}
+              onPress={() => setActiveFilter('Applied')}
+            >
+              <Text style={activeFilter === 'Applied' ? styles.activeTabText : styles.tabText}>
+                Applied
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.filterTab}>
-              <Text style={styles.tabText}>Saved</Text>
+            <TouchableOpacity 
+              style={[styles.filterTab, activeFilter === 'Saved' && styles.activeTab]}
+              onPress={() => setActiveFilter('Saved')}
+            >
+              <Text style={activeFilter === 'Saved' ? styles.activeTabText : styles.tabText}>
+                Saved
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.filterTab}>
-              <Text style={styles.tabText}>Viewed</Text>
+            <TouchableOpacity 
+              style={[styles.filterTab, activeFilter === 'Viewed' && styles.activeTab]}
+              onPress={() => setActiveFilter('Viewed')}
+            >
+              <Text style={activeFilter === 'Viewed' ? styles.activeTabText : styles.tabText}>
+                Viewed
+              </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Empty State */}
-          <View style={styles.emptyState}>
-            <Ionicons name="file-tray-outline" size={80} color="#D0D0D0" />
-            <Text style={styles.emptyText}>No Results Found</Text>
-          </View>
+          {/* Applied Jobs List */}
+          {activeFilter === 'Applied' && (
+            <>
+              <Text style={{ padding: 10, color: '#000' }}>
+                Debug: Active Filter = {activeFilter}, Jobs Count = {appliedJobs?.length ?? 'undefined'}, Loading = {loadingJobs ? 'true' : 'false'}
+              </Text>
+              {loadingJobs ? (
+                <ActivityIndicator size="large" color="#3DD5DC" style={{ marginVertical: 40 }} />
+              ) : appliedJobs && appliedJobs.length > 0 ? (
+                <View>
+                  {appliedJobs.map((job) => {
+                    console.log('Rendering job:', job.id, job.jobTitle);
+                    return (
+                      <AppliedJobCard
+                        key={job.id}
+                        application={job}
+                        onPress={() => {
+                          console.log('Job pressed:', job.id);
+                        }}
+                      />
+                    );
+                  })}
+                  
+                  {/* Load More / Show Less Buttons */}
+                  <View style={styles.paginationButtons}>
+                    {jobsPage < totalJobsPages - 1 && (
+                      <TouchableOpacity
+                        style={styles.loadMoreButton}
+                        onPress={handleLoadMoreJobs}
+                        disabled={loadingJobs}
+                      >
+                        {loadingJobs ? (
+                          <ActivityIndicator size="small" color="#3DD5DC" />
+                        ) : (
+                          <>
+                            <Text style={styles.loadMoreText}>Load More</Text>
+                            <Ionicons name="chevron-down" size={20} color="#3DD5DC" />
+                          </>
+                        )}
+                      </TouchableOpacity>
+                    )}
+                    
+                    {jobsPage > 0 && (
+                      <TouchableOpacity
+                        style={styles.showLessButton}
+                        onPress={handleShowLess}
+                        disabled={loadingJobs}
+                      >
+                        <Ionicons name="chevron-up" size={20} color="#666" />
+                        <Text style={styles.showLessText}>Show Less</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.emptyState}>
+                  <Ionicons name="file-tray-outline" size={80} color="#D0D0D0" />
+                  <Text style={styles.emptyText}>No Applied Jobs</Text>
+                  <Text style={styles.emptySubText}>
+                    Jobs you apply for will appear here
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
+
+          {/* Saved & Viewed - Coming Soon */}
+          {(activeFilter === 'Saved' || activeFilter === 'Viewed') && (
+            <View style={styles.emptyState}>
+              <Ionicons name="construct-outline" size={60} color="#D0D0D0" />
+              <Text style={styles.emptyText}>Coming Soon</Text>
+              <Text style={styles.emptySubText}>
+                This feature is under development
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Job Suggestions Section */}
