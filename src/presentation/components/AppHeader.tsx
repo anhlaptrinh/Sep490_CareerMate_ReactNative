@@ -29,7 +29,33 @@ export default function AppHeader({
 }: AppHeaderProps) {
   const navigation = useNavigation<any>();
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
   const { isAuthenticated, user } = useAuthStore();
+
+  // Fetch avatar from candidate profile
+  React.useEffect(() => {
+    const fetchAvatar = async () => {
+      if (isAuthenticated) {
+        try {
+          const { container } = await import('../../di/dependencies');
+          const { TYPES } = await import('../../di/types');
+          
+          const candidateRepo = container.get<any>(TYPES.CandidateRepo);
+          const response = await candidateRepo.getMyProfile();
+          
+          if (response?.result?.image) {
+            setAvatarUrl(response.result.image);
+          }
+        } catch (error) {
+          console.log('Could not fetch avatar:', error);
+        }
+      } else {
+        setAvatarUrl(null);
+      }
+    };
+    
+    fetchAvatar();
+  }, [isAuthenticated]);
 
   const headerOpacity = scrollY ? scrollY.interpolate({
     inputRange: [0, 100],
@@ -64,6 +90,7 @@ export default function AppHeader({
         onClose={() => setMenuVisible(false)}
         isLoggedIn={isAuthenticated}
         userName={user?.fullname || 'Guest User'}
+        avatarUrl={avatarUrl}
         onNavigateToLogin={() => navigation.navigate('Auth', { screen: 'Login' })}
       />
 

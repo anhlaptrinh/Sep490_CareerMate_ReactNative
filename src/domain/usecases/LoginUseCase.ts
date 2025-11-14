@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../di/types";
-import { AuthResponse } from "../models/AuthResponse";
+import { AuthResponse } from "../models/Authentication";
 import { LoginRepo } from "../../data/repository/LoginRepo";
 
 @injectable()

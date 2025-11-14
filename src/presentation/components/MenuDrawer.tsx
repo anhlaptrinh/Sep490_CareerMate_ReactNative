@@ -11,6 +11,7 @@ import {
   Platform,
   StatusBar,
   Alert,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +24,7 @@ interface MenuDrawerProps {
   onClose: () => void;
   isLoggedIn?: boolean;
   userName?: string;
+  avatarUrl?: string | null;
   onNavigateToLogin?: () => void;
 }
 
@@ -36,7 +38,7 @@ const menuItems = [
   { id: 'personality', title: 'Workplace Personality Test', icon: 'school-outline' as const },
 ];
 
-export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userName = 'Guest User', onNavigateToLogin }: MenuDrawerProps) {
+export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userName = 'Guest User', avatarUrl, onNavigateToLogin }: MenuDrawerProps) {
   const navigation = useNavigation<any>();
   const { logout } = useAuthStore();
   const [isVisible, setIsVisible] = React.useState(visible);
@@ -45,12 +47,12 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
 
   const handleLogout = () => {
     Alert.alert(
-      'Đăng xuất',
-      'Bạn có chắc chắn muốn đăng xuất?',
+      'Log out',
+      'Are you sure to Log out?',
       [
-        { text: 'Hủy', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Đăng xuất',
+          text: 'Log out',
           style: 'destructive',
           onPress: async () => {
             onClose();
@@ -147,7 +149,14 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
             {isLoggedIn ? (
               <View style={styles.userSection}>
                 <View style={styles.avatar}>
-                  <Ionicons name="person" size={32} color="#FFFFFF" />
+                  {avatarUrl ? (
+                    <Image 
+                      source={{ uri: avatarUrl }} 
+                      style={styles.avatarImage}
+                    />
+                  ) : (
+                    <Ionicons name="person" size={32} color="#FFFFFF" />
+                  )}
                 </View>
                 <Text style={styles.userName}>{userName}</Text>
               </View>
@@ -266,6 +275,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   userName: {
     fontSize: 18,

@@ -1,4 +1,4 @@
-import { AuthResponse } from "../../domain/models/AuthResponse";
+import { AuthResponse } from "../../domain/models/Authentication";
 
 
 export interface LoginRepo {

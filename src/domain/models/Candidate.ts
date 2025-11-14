@@ -12,15 +12,19 @@ export interface CandidateRequest {
     link?: string;  
 }
 
-export interface CandidateResponse {
-  id: number;
-  dob: string;           // ISO
+export interface CandidateData {
+  candidateId: number;
+  dob: string;
   title: string;
   fullName: string;
   phone: string;
   address: string;
   image?: string | null;
-  gender: Gender;
+  gender: string; // Backend returns string, not enum
   link?: string | null;
+}
 
+export interface CandidateResponse {
+  code: number;
+  result: CandidateData;
 }

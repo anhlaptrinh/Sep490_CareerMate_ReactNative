@@ -21,6 +21,7 @@ class CandidateRepoImpl implements CandidateRepo {
     async getMyProfile(): Promise<CandidateResponse> {
         try {
             const response = await this.apiClient.get<CandidateResponse>("/candidates/profiles/current");
+            console.log("Profile response:", response);
             return response;
         } catch (error) {
             console.error("Error fetching candidate profile:", error);
@@ -28,8 +29,8 @@ class CandidateRepoImpl implements CandidateRepo {
         }
     }
 
-    async updateCandidate(id: string, candidate: CandidateRequest): Promise<void> {
-        await this.apiClient.put(`/candidates/${id}`, candidate);
+    async updateCandidate(candidate: CandidateRequest): Promise<void> {
+        await this.apiClient.put(`/candidates/profiles`, candidate);
     }
 
     async deleteCandidate(id: string): Promise<void> {

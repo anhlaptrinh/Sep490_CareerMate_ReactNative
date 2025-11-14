@@ -31,6 +31,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
   clearError: () => void;
   requireAuth: () => boolean; // Check if user is authenticated, return true if yes
+  updateUser: (updates: Partial<User>) => void; // Update user info
 }
 
 /**
@@ -163,5 +164,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
    */
   requireAuth: () => {
     return get().isAuthenticated;
+  },
+
+  /**
+   * Update user information
+   */
+  updateUser: (updates: Partial<User>) => {
+    const currentUser = get().user;
+    if (currentUser) {
+      set({
+        user: {
+          ...currentUser,
+          ...updates,
+        },
+      });
+    }
   },
 }));

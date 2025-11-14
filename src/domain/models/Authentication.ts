@@ -12,7 +12,14 @@ export interface AuthResponse {
   };
 }
 
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  fullName: string;
+  dateOfBirth: string; // ISO date string
+}
 /**
  * Simplified token data for app usage
  */
+
 
