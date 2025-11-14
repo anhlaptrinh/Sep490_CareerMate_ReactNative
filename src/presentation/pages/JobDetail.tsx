@@ -64,8 +64,8 @@ export default function JobDetailScreen({ route, navigation }: Props) {
   if (error || !jobDetail) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Ionicons name="alert-circle-outline" size={48} color="#FF6B35" />
-        <Text style={{ marginTop: 16, color: '#FF6B35', fontSize: 16, fontWeight: '600' }}>
+        <Ionicons name="alert-circle-outline" size={48} color="#3DD5DC" />
+        <Text style={{ marginTop: 16, color: '#3DD5DC', fontSize: 16, fontWeight: '600' }}>
           Error loading job
         </Text>
         <Text style={{ marginTop: 8, color: '#666666', textAlign: 'center' }}>{error}</Text>
@@ -185,7 +185,17 @@ export default function JobDetailScreen({ route, navigation }: Props) {
           description={job.about}
           tags={job.tags}
           logo={job.logoUrl}
-          onPress={() => console.log('Company pressed:', job.company)}
+          onPress={() => {
+            const companyData = {
+              id: job.id,
+              name: job.company,
+              about: job.about,
+              website: job.website,
+              logoUrl: job.logoUrl,
+              jobs: [],
+            };
+            navigation.navigate('CompanyDetailScreen', { companyData });
+          }}
           onBookmarkPress={() => console.log('Bookmark pressed:', job.company)}
         />
       </View>
