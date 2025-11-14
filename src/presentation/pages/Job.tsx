@@ -1,5 +1,5 @@
 // src/screens/JobScreen.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CompanyCard from '../components/CompanyCard';
@@ -17,6 +18,12 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { JobStackParamList } from '../navigation/JobStackNavigator';
+// ✅ Import từ Domain & Data layer
+import { mapJobsForUI, getPaginatedJobs, groupJobsByCompany } from '../../domain/usecases/GetJobsUseCase';
+import { container } from '../../di/dependencies';
+import { TYPES } from '../../di/types';
+import { JobRepo } from '../../data/repository/job';
+import { JobPosting } from '../../domain/models/JobModel';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -29,9 +36,15 @@ export default function JobScreen() {
   const PAGE_SIZE = 5;
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [jobsData, setJobsData] = useState<JobPosting[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const styles = jobStyles;
   const withAuth = useRequireAuth();
+
+  // ✅ Get JobRepo từ DI container
+  const jobRepository = container.get<JobRepo>(TYPES.JobRepo);
 
   // Handler functions with auth protection
   const handleBookmarkCompany = withAuth((companyId: string) => {
@@ -41,350 +54,64 @@ export default function JobScreen() {
   const handleBookmarkJob = withAuth((jobId: string) => {
     // TODO: Call API to save job bookmark
   }, 'Please login to bookmark jobs');
-  // Dùng useNavigation với type đã khai báo
+
   const navigation = useNavigation<JobScreenNavigationProp>();
 
-  // ✅ Fake API response
-  const fakeApiResponse = {
-    result: {
-      content: [
-        {
-          id: 54,
-          title: 'Mobile Engineer (Flutter)',
-          description:
-            'Join our mobile team to develop cross-platform mobile applications using Flutter...',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-06',
-          postTime: '2025-11-06',
-          skills: [
-            { id: 17, name: 'BrSE', mustToHave: true },
-            { id: 14, name: 'Kubernetes', mustToHave: true },
-            { id: 16, name: 'TensorFlow', mustToHave: false },
-            { id: 18, name: 'Python', mustToHave: false },
-            { id: 19, name: 'Pandas', mustToHave: false },
-            { id: 20, name: 'Django', mustToHave: false },
-          ],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '$1300 - $2800 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          id: 43,
-          title: 'Mobile Developer (Flutter)',
-          description: 'Hiring a Mobile Developer proficient in Flutter or React Native.',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-31',
-          postTime: '2025-11-03',
-          skills: [{ id: 2, name: 'C#', mustToHave: true }],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '1000-1500 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          "id": 42,
-          "title": "QA Engineer (Automation)",
-          "description": "Looking for a QA Engineer to ensure software quality and test automation.",
-          "address": "Da Nang",
-          "expirationDate": "2025-12-31",
-          "postTime": "2025-11-03",
-          "skills": [
-            {
-              "id": 1,
-              "name": "java",
-              "mustToHave": true
-            }
-          ],
-          "yearsOfExperience": 2,
-          "workModel": "Onsite",
-          "salaryRange": "800-1200 USD",
-          "reason": "Quality assurance improvement",
-          "jobPackage": "Basic",
-          "recruiterInfo": {
-            "recruiterId": 31,
-            "companyName": "FPT",
-            "website": "https://fptsoftware.com",
-            "logoUrl": "https://images.unsplash.com/photo-1760625142154-0d899eacedb7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=3087",
-            "about": "string"
-          }
-        },
-        {
-          id: 58,
-          title: 'Mobile Engineer (Flutter)',
-          description:
-            'Join our mobile team to develop cross-platform mobile applications using Flutter...',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-06',
-          postTime: '2025-11-06',
-          skills: [
-            { id: 17, name: 'BrSE', mustToHave: true },
-            { id: 14, name: 'Kubernetes', mustToHave: true },
-            { id: 16, name: 'TensorFlow', mustToHave: false },
-            { id: 18, name: 'Python', mustToHave: false },
-            { id: 19, name: 'Pandas', mustToHave: false },
-            { id: 20, name: 'Django', mustToHave: false },
-          ],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '$1300 - $2800 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          id: 59,
-          title: 'Mobile Developer (Flutter)',
-          description: 'Hiring a Mobile Developer proficient in Flutter or React Native.',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-31',
-          postTime: '2025-11-03',
-          skills: [{ id: 2, name: 'C#', mustToHave: true }],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '1000-1500 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          "id": 60,
-          "title": "QA Engineer (Automation)",
-          "description": "Looking for a QA Engineer to ensure software quality and test automation.",
-          "address": "Da Nang",
-          "expirationDate": "2025-12-31",
-          "postTime": "2025-11-03",
-          "skills": [
-            {
-              "id": 1,
-              "name": "java",
-              "mustToHave": true
-            }
-          ],
-          "yearsOfExperience": 2,
-          "workModel": "Onsite",
-          "salaryRange": "800-1200 USD",
-          "reason": "Quality assurance improvement",
-          "jobPackage": "Basic",
-          "recruiterInfo": {
-            "recruiterId": 31,
-            "companyName": "FPT",
-            "website": "https://fptsoftware.com",
-            "logoUrl": "https://images.unsplash.com/photo-1760625142154-0d899eacedb7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=3087",
-            "about": "string"
-          }
-        },
-        {
-          id: 61,
-          title: 'Mobile Engineer (Flutter)',
-          description:
-            'Join our mobile team to develop cross-platform mobile applications using Flutter...',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-06',
-          postTime: '2025-11-06',
-          skills: [
-            { id: 17, name: 'BrSE', mustToHave: true },
-            { id: 14, name: 'Kubernetes', mustToHave: true },
-            { id: 16, name: 'TensorFlow', mustToHave: false },
-            { id: 18, name: 'Python', mustToHave: false },
-            { id: 19, name: 'Pandas', mustToHave: false },
-            { id: 20, name: 'Django', mustToHave: false },
-          ],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '$1300 - $2800 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          id: 62,
-          title: 'Mobile Developer (Flutter)',
-          description: 'Hiring a Mobile Developer proficient in Flutter or React Native.',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-31',
-          postTime: '2025-11-03',
-          skills: [{ id: 2, name: 'C#', mustToHave: true }],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '1000-1500 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          "id": 63,
-          "title": "QA Engineer (Automation)",
-          "description": "Looking for a QA Engineer to ensure software quality and test automation.",
-          "address": "Da Nang",
-          "expirationDate": "2025-12-31",
-          "postTime": "2025-11-03",
-          "skills": [
-            {
-              "id": 1,
-              "name": "java",
-              "mustToHave": true
-            }
-          ],
-          "yearsOfExperience": 2,
-          "workModel": "Onsite",
-          "salaryRange": "800-1200 USD",
-          "reason": "Quality assurance improvement",
-          "jobPackage": "Basic",
-          "recruiterInfo": {
-            "recruiterId": 31,
-            "companyName": "FPT",
-            "website": "https://fptsoftware.com",
-            "logoUrl": "https://images.unsplash.com/photo-1760625142154-0d899eacedb7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=3087",
-            "about": "string"
-          }
-        },
-        {
-          id: 64,
-          title: 'Mobile Developer (Flutter)',
-          description: 'Hiring a Mobile Developer proficient in Flutter or React Native.',
-          address: 'Ho Chi Minh City',
-          expirationDate: '2025-12-31',
-          postTime: '2025-11-03',
-          skills: [{ id: 2, name: 'C#', mustToHave: true }],
-          yearsOfExperience: 2,
-          workModel: 'Hybrid',
-          salaryRange: '1000-1500 USD',
-          recruiterInfo: {
-            recruiterId: 33,
-            companyName: 'Nvidia',
-            website: 'https://www.nvidia.com',
-            logoUrl:
-              'https://images.unsplash.com/photo-1662947683395-1ce33bdcd094?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2128',
-            about:
-              'NVIDIA Corporation is a global leader in graphics processing units (GPUs) and AI computing.',
-          },
-        },
-        {
-          "id": 65,
-          "title": "QA Engineer (Automation)",
-          "description": "Looking for a QA Engineer to ensure software quality and test automation.",
-          "address": "Da Nang",
-          "expirationDate": "2025-12-31",
-          "postTime": "2025-11-03",
-          "skills": [
-            {
-              "id": 1,
-              "name": "java",
-              "mustToHave": true
-            }
-          ],
-          "yearsOfExperience": 2,
-          "workModel": "Onsite",
-          "salaryRange": "800-1200 USD",
-          "reason": "Quality assurance improvement",
-          "jobPackage": "Basic",
-          "recruiterInfo": {
-            "recruiterId": 31,
-            "companyName": "FPT",
-            "website": "https://fptsoftware.com",
-            "logoUrl": "https://images.unsplash.com/photo-1760625142154-0d899eacedb7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=3087",
-            "about": "string"
-          }
-        },
-      ],
-    },
-  };
-  const jobData = fakeApiResponse.result.content;
+  // ✅ UseEffect - Fetch jobs từ API khi component mount
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-  // Map data
-  const jobs = fakeApiResponse.result.content.slice(0, PAGE_SIZE).map((job) => ({
-    id: job.id,
-    title: job.title,
-    company: job.recruiterInfo.companyName,
-    description: job.description,
-    about: job.recruiterInfo.about,
-    logoUrl: job.recruiterInfo.logoUrl,
-    website: job.recruiterInfo.website,
-    salary: job.salaryRange,
-    location: job.address,
-    workModel: job.workModel,
-    tags: job.skills.map((s) => `${s.mustToHave ? '⭐ ' : ''}${s.name}`),
-    postedTime: job.postTime,
-    expirationDate: job.expirationDate,
-    yearsOfExperience: job.yearsOfExperience,
-  }));
-
-  // Create company data object with all jobs from that company
-  const createCompanyDataFromName = (companyName: string) => {
-    const companyJobs = fakeApiResponse.result.content.filter(
-      (job) => job.recruiterInfo.companyName === companyName
-    );
-    const firstJob = companyJobs[0]?.recruiterInfo;
-
-    return {
-      id: firstJob?.recruiterId || 0,
-      name: companyName,
-      about: firstJob?.about || '',
-      website: firstJob?.website || '',
-      logoUrl: firstJob?.logoUrl || '',
-      jobs: companyJobs,
-    };
-  };
-
-  const companies = Object.values(
-    jobs.reduce((acc: Record<string, any>, job) => {
-      if (!acc[job.company]) {
-        acc[job.company] = {
-          id: job.id,
-          name: job.company,
-          about: job.about.length > 100 ? job.about.slice(0, 100) + '...' : job.about,
-          jobCount: 1,
-          tags: job.tags,
-          logoUrl: job.logoUrl,
-          website: job.website,
-        };
-      } else {
-        acc[job.company].jobCount += 1;
+        // Gọi repository để lấy jobs
+        const response = await jobRepository.getJobs(0, PAGE_SIZE, 'createAt', 'desc');
+        setJobsData(response.result.content);
+        console.log('✅ Jobs loaded successfully:', response.result.content.length);
+      } catch (err) {
+        console.error('❌ Error loading jobs:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load jobs');
+      } finally {
+        setIsLoading(false);
       }
-      return acc;
-    }, {} as Record<string, any>)
-  );
+    };
+
+    loadJobs();
+  }, []);
+
+  // ✅ Map jobs từ API response thành format UI
+  const mappedJobs = mapJobsForUI(getPaginatedJobs(jobsData, PAGE_SIZE));
+
+  // ✅ Group jobs theo company
+  const companies = Object.values(groupJobsByCompany(mappedJobs));
+
+  // ✅ Render loading state
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#3DD5DC" />
+        <Text style={{ marginTop: 16, color: '#999999' }}>Loading jobs...</Text>
+      </View>
+    );
+  }
+
+  // ✅ Render error state
+  if (error) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Ionicons name="alert-circle-outline" size={48} color="#3DD5DC" />
+        <Text style={{ marginTop: 16, color: '#3DD5DC', fontSize: 16, fontWeight: '600' }}>
+          Error loading jobs
+        </Text>
+        <Text style={{ marginTop: 8, color: '#999999', textAlign: 'center', paddingHorizontal: 16 }}>
+          {error}
+        </Text>
+      </View>
+    );
+  }
+
+  // Cấu trúc dữ liệu phục vụ cho việc sử dụng jobsData trong navigation
+  const jobDataForNav = jobsData;
 
   return (
     <View style={styles.container}>
@@ -430,22 +157,32 @@ export default function JobScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.horizontalScroll}
           >
-            {companies.map((company: any) => (
-              <View key={company.id} style={styles.companyCardWrapper}>
-                <CompanyCard
-                  companyName={company.name}
-                  description={company.about}
-                  jobCount={company.jobCount}
-                  tags={company.tags}
-                  logo={company.logoUrl}
-                  onPress={() => {
-                    const companyData = createCompanyDataFromName(company.name);
-                    navigation.navigate('CompanyDetailScreen', { companyData });
-                  }}
-                  onBookmarkPress={() => console.log('Bookmark pressed:', company.name)}
-                />
-              </View>
-            ))}
+            {companies.map((company: any) => {
+              const companyJobs = jobsData.filter((job) => job.recruiterInfo.companyName === company.name);
+              const companyData = {
+                id: companyJobs[0]?.recruiterInfo.recruiterId || 0,
+                name: company.name,
+                about: companyJobs[0]?.recruiterInfo.about || '',
+                website: companyJobs[0]?.recruiterInfo.website || '',
+                logoUrl: company.logoUrl,
+                jobs: companyJobs,
+              };
+              return (
+                <View key={company.id} style={styles.companyCardWrapper}>
+                  <CompanyCard
+                    companyName={company.name}
+                    description={company.about}
+                    jobCount={company.jobCount}
+                    tags={company.tags}
+                    logo={company.logoUrl}
+                    onPress={() => {
+                      navigation.navigate('CompanyDetailScreen', { companyData });
+                    }}
+                    onBookmarkPress={() => console.log('Bookmark pressed:', company.name)}
+                  />
+                </View>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -453,13 +190,13 @@ export default function JobScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Latest Jobs</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('LatestJobsScreen', { jobsData: jobData })}>
+            <TouchableOpacity onPress={() => navigation.navigate('LatestJobsScreen', { jobsData: jobsData })}>
               <Text style={styles.seeMoreText}>See More</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.jobsList}>
-            {jobs.map((job: any) => {
+            {mappedJobs.map((job: any) => {
               const isSelected = selectedJobId === job.id;
               return (
                 <TouchableOpacity
