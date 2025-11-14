@@ -22,34 +22,37 @@ const styles = jobStyles;
 type Props = NativeStackScreenProps<JobStackParamList, 'LatestJobsScreen'>;
 
 export default function LatestJobsScreen({ navigation }: Props) {
-  const PAGE_SIZE = 10;
-  const [jobsData, setJobsData] = useState<JobPosting[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const PAGE_SIZE = 5;
   const [visibleJobs, setVisibleJobs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMoreJobs, setHasMoreJobs] = useState(true);
 
   // ✅ Get JobRepo từ DI container
   const jobRepository = container.get<JobRepo>(TYPES.JobRepo);
 
-  // ✅ UseEffect - Fetch jobs từ API khi component mount
+  // ✅ UseEffect - Fetch jobs khi component mount (page 0)
   useEffect(() => {
     const loadJobs = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // Gọi repository để lấy jobs với pagination
-        const response = await jobRepository.getJobs(0, 50, 'createAt', 'desc');
-        const allJobs = response.result.content;
-        setJobsData(allJobs);
+        // Gọi API lần đầu: page 0, size PAGE_SIZE
+        const response = await jobRepository.getJobs(0, PAGE_SIZE, 'createAt', 'desc');
+        const jobs = response.result.content;
+        
+        const mappedJobs = mapJobsForUI(jobs);
+        setVisibleJobs(mappedJobs);
+        setCurrentPage(1);
+        
+        // Nếu số jobs < PAGE_SIZE thì không còn jobs để load
+        setHasMoreJobs(jobs.length === PAGE_SIZE);
 
-        // Map và format jobs cho UI
-        const mappedJobs = mapJobsForUI(allJobs);
-        const paginatedJobs = mappedJobs.slice(0, PAGE_SIZE);
-        setVisibleJobs(paginatedJobs);
-
-        console.log('✅ Latest jobs loaded successfully:', allJobs.length);
+        console.log('✅ Latest jobs loaded successfully:', jobs.length);
       } catch (err) {
         console.error('❌ Error loading jobs:', err);
         setError(err instanceof Error ? err.message : 'Failed to load jobs');
@@ -61,12 +64,33 @@ export default function LatestJobsScreen({ navigation }: Props) {
     loadJobs();
   }, []);
 
-  // Mỗi lần nhấn sẽ hiển thị thêm PAGE_SIZE job
-  const handleViewMore = () => {
-    const mappedJobs = mapJobsForUI(jobsData);
-    const currentLength = visibleJobs.length;
-    const nextJobs = mappedJobs.slice(currentLength, currentLength + PAGE_SIZE);
-    setVisibleJobs([...visibleJobs, ...nextJobs]);
+  // ✅ Gọi API để lấy thêm jobs khi bấm "View More"
+  const handleViewMore = async () => {
+    if (isLoadingMore || !hasMoreJobs) return;
+
+    try {
+      setIsLoadingMore(true);
+      
+      // Gọi API: page = currentPage, size = PAGE_SIZE
+      const response = await jobRepository.getJobs(currentPage, PAGE_SIZE, 'createAt', 'desc');
+      const newJobs = response.result.content;
+      
+      const mappedNewJobs = mapJobsForUI(newJobs);
+      
+      // Thêm jobs mới vào danh sách cũ
+      setVisibleJobs([...visibleJobs, ...mappedNewJobs]);
+      setCurrentPage(currentPage + 1);
+      
+      // Nếu số jobs < PAGE_SIZE thì đã hết
+      setHasMoreJobs(newJobs.length === PAGE_SIZE);
+      
+      console.log('✅ Loaded more jobs, page:', currentPage);
+    } catch (err) {
+      console.error('❌ Error loading more jobs:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load more jobs');
+    } finally {
+      setIsLoadingMore(false);
+    }
   };
 
   // ✅ Render loading state
@@ -147,11 +171,19 @@ export default function LatestJobsScreen({ navigation }: Props) {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Nút "View More" chỉ hiện nếu còn job chưa hiển thị */}
-      {visibleJobs.length < mapJobsForUI(jobsData).length && (
+      {/* Nút "View More" chỉ hiện nếu còn job để load */}
+      {hasMoreJobs && !isLoadingMore && (
         <TouchableOpacity style={styles.viewMoreButton} onPress={handleViewMore}>
           <Text style={styles.viewMoreText}>View More</Text>
         </TouchableOpacity>
+      )}
+
+      {/* Loading indicator khi đang load thêm jobs */}
+      {isLoadingMore && (
+        <View style={{ paddingVertical: 16, alignItems: 'center' }}>
+          <ActivityIndicator size="small" color="#3DD5DC" />
+          <Text style={{ marginTop: 8, color: '#999999', fontSize: 12 }}>Loading more...</Text>
+        </View>
       )}
     </View>
   );
