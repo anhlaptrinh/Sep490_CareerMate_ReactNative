@@ -1,62 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Linking, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { jobStyles } from '../styles/JobStyles';
 import { CompanyCard } from '../components';
 import { JobStackParamList } from '../navigation/JobStackNavigator';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Job } from './types';
-const styles = jobStyles;
+import { container } from '../../di/dependencies';
+import { TYPES } from '../../di/types';
+import { JobRepo } from '../../data/repository/job';
+import { mapJobsForUI } from '../../domain/usecases/GetJobsUseCase';
 
-const fetchData = {
-  "result": {
-    "id": 1,
-    "title": "Frontend Developer",
-    "description": "Create responsive web interfaces, implement UI/UX designs, and optimize web performance ",
-    "address": "Ho Chi Minh",
-    "expirationDate": "2025-12-15",
-    "postTime": "2025-11-06",
-    "skills": [],
-    "yearsOfExperience": 2,
-    "workModel": "At office",
-    "salaryRange": "2000 - 3000 USD",
-    "reason": "Premium AON healthcare insurance",
-    "jobPackage": "Professional, open minded and supportive working enviroment",
-    "recruiterInfo": {
-      "recruiterId": 1,
-      "companyName": "Google",
-      "website": "https://google.com",
-      "logoUrl": "https://images.unsplash.com/photo-1762108977165-5e7bb9b63e93?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw3fHx8ZW58MHx8fHx8&auto=format&fit=crop&q=60&w=600",
-      "about": "Google is an American multinational technology company primarily known for its search engine, which organizes the world's information and makes it universally accessible"
-    }
-  }
-}
+const styles = jobStyles;
 
 type Props = NativeStackScreenProps<JobStackParamList, 'JobDetailScreen'>;
 
-const res: Job = fetchData.result;
-
 export default function JobDetailScreen({ route, navigation }: Props) {
   const { jobId } = route.params;
+  const [jobDetail, setJobDetail] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]);
 
-  const job = {
-    id: res.id,
-    title: res.title,
-    company: res.recruiterInfo.companyName,
-    description: res.description,
-    about: res.recruiterInfo.about,
-    logoUrl: res.recruiterInfo.logoUrl,
-    website: res.recruiterInfo.website,
-    salary: res.salaryRange,
-    location: res.address,
-    workModel: res.workModel,
-    tags: res.skills?.map((s) => `${s.mustToHave ? '⭐ ' : ''}${s.name}`) ?? [],
-    postedTime: res.postTime,
-    expirationDate: res.expirationDate,
-    yearsOfExperience: res.yearsOfExperience,
-    reason: res.reason,
-    jobPackage: res.jobPackage,
-  };
+  // ✅ Get JobRepo từ DI container
+  const jobRepository = container.get<JobRepo>(TYPES.JobRepo);
+
+  // ✅ UseEffect - Fetch job detail khi component mount
+  useEffect(() => {
+    const loadJobDetail = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Gọi API để lấy chi tiết job
+        const jobData = await jobRepository.getJobById(jobId);
+
+        // Map job data to UI format
+        const mappedJob = mapJobsForUI([jobData])[0];
+        setJobDetail(mappedJob);
+
+        console.log('✅ Job detail loaded successfully:', jobData.id);
+      } catch (err) {
+        console.error('❌ Error loading job detail:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load job detail');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadJobDetail();
+  }, [jobId]);
+
+  // ✅ Render loading state
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#3DD5DC" />
+        <Text style={{ marginTop: 16, color: '#999999' }}>Loading job details...</Text>
+      </View>
+    );
+  }
+
+  // ✅ Render error state
+  if (error || !jobDetail) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Ionicons name="alert-circle-outline" size={48} color="#FF6B35" />
+        <Text style={{ marginTop: 16, color: '#FF6B35', fontSize: 16, fontWeight: '600' }}>
+          Error loading job
+        </Text>
+        <Text style={{ marginTop: 8, color: '#666666', textAlign: 'center' }}>{error}</Text>
+      </View>
+    );
+  }
+
+  const job = jobDetail;
 
   return (
     <ScrollView style={styles.container}>
@@ -151,7 +168,7 @@ export default function JobDetailScreen({ route, navigation }: Props) {
         <View style={styles.detailCard}>
           <Text style={styles.cardTitle}>Required Skills</Text>
           <View style={styles.skillsContainer}>
-            {job.tags.map((tag, index) => (
+            {job.tags.map((tag: string, index: number) => (
               <View key={index} style={styles.skillTag}>
                 <Text style={styles.skillTagText}>{tag}</Text>
               </View>

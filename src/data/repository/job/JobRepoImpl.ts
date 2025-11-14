@@ -45,7 +45,7 @@ class JobRepoImpl implements JobRepo {
   async getJobById(jobId: number): Promise<JobPosting> {
     try {
       const response = await this.apiClient.get<{ result: JobPosting }>(
-        `/api/job-postings/${jobId}`
+        `/job-postings/${jobId}`
       );
       return response.result || (response as any);
     } catch (error) {

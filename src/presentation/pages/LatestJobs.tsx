@@ -44,11 +44,11 @@ export default function LatestJobsScreen({ navigation }: Props) {
         // Gọi API lần đầu: page 0, size PAGE_SIZE
         const response = await jobRepository.getJobs(0, PAGE_SIZE, 'createAt', 'desc');
         const jobs = response.result.content;
-        
+
         const mappedJobs = mapJobsForUI(jobs);
         setVisibleJobs(mappedJobs);
         setCurrentPage(1);
-        
+
         // Nếu số jobs < PAGE_SIZE thì không còn jobs để load
         setHasMoreJobs(jobs.length === PAGE_SIZE);
 
@@ -70,20 +70,20 @@ export default function LatestJobsScreen({ navigation }: Props) {
 
     try {
       setIsLoadingMore(true);
-      
+
       // Gọi API: page = currentPage, size = PAGE_SIZE
       const response = await jobRepository.getJobs(currentPage, PAGE_SIZE, 'createAt', 'desc');
       const newJobs = response.result.content;
-      
+
       const mappedNewJobs = mapJobsForUI(newJobs);
-      
+
       // Thêm jobs mới vào danh sách cũ
       setVisibleJobs([...visibleJobs, ...mappedNewJobs]);
       setCurrentPage(currentPage + 1);
-      
+
       // Nếu số jobs < PAGE_SIZE thì đã hết
       setHasMoreJobs(newJobs.length === PAGE_SIZE);
-      
+
       console.log('✅ Loaded more jobs, page:', currentPage);
     } catch (err) {
       console.error('❌ Error loading more jobs:', err);
@@ -107,8 +107,8 @@ export default function LatestJobsScreen({ navigation }: Props) {
   if (error) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Ionicons name="alert-circle-outline" size={48} color="#FF6B35" />
-        <Text style={{ marginTop: 16, color: '#FF6B35', fontSize: 16, fontWeight: '600' }}>
+        <Ionicons name="alert-circle-outline" size={48} color="#3DD5DC" />
+        <Text style={{ marginTop: 16, color: '#3DD5DC', fontSize: 16, fontWeight: '600' }}>
           Error loading jobs
         </Text>
         <Text style={{ marginTop: 8, color: '#666666', textAlign: 'center' }}>{error}</Text>
