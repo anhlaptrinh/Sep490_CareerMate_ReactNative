@@ -21,7 +21,20 @@ import { CompanyData } from '../types/company';
 import { container } from '../../di/dependencies';
 import { TYPES } from '../../di/types';
 import { JobRepo } from '../../data/repository/job';
-import { mapJobsForUI } from '../../domain/usecases/GetJobsUseCase';
+
+// ✅ Transform company job data từ API sang format UI
+const mapCompanyJobForUI = (job: any) => ({
+  id: job.id,
+  title: job.title,
+  company: '',
+  location: job.address,
+  salary: job.salaryRange,
+  yearsOfExperience: job.yearsOfExperience,
+  expirationDate: job.expirationDate,
+  workModel: job.workModel,
+  tags: job.skills || [],
+  postedTime: job.postTime,
+});
 
 type CompanyDetailScreenNavigationProp = NativeStackNavigationProp<JobStackParamList, 'CompanyDetailScreen'>;
 
@@ -90,7 +103,7 @@ export default function CompanyDetailScreen() {
       // Gọi API để lấy danh sách jobs của công ty
       const response = await jobRepository.getCompanyJobs(companyData.id, page, PAGE_SIZE);
       const jobs = response.result.content;
-      const mappedJobs = mapJobsForUI(jobs);
+      const mappedJobs = jobs.map(mapCompanyJobForUI);
 
       if (isFirst) {
         setCompanyJobs(mappedJobs);
@@ -133,12 +146,7 @@ export default function CompanyDetailScreen() {
       >
         {/* Company Header Banner */}
         <View style={styles.spotlightCard}>
-          <View
-            style={[
-              styles.spotlightImage,
-              { backgroundColor: '#fff' },
-            ]}
-          >
+          <View style={detailStyles.headerLogoBackground}>
             <Image
               source={{ uri: companyData.logoUrl }}
               style={styles.companyDetailLogo}
@@ -172,19 +180,14 @@ export default function CompanyDetailScreen() {
           <TouchableOpacity
             style={[
               detailStyles.tabButtonBase,
-              {
-                borderBottomColor: activeTab === 'about' ? '#3DD5DC' : 'transparent',
-              },
+              activeTab === 'about' ? detailStyles.tabBorderActive : detailStyles.tabBorderInactive,
             ]}
             onPress={() => setActiveTab('about')}
           >
             <Text
               style={[
                 detailStyles.tabButtonText,
-                {
-                  fontWeight: activeTab === 'about' ? '700' : '600',
-                  color: activeTab === 'about' ? '#3DD5DC' : '#999999',
-                },
+                activeTab === 'about' ? detailStyles.tabButtonActive : detailStyles.tabButtonInactive,
               ]}
             >
               About
@@ -194,19 +197,14 @@ export default function CompanyDetailScreen() {
           <TouchableOpacity
             style={[
               detailStyles.tabButtonBase,
-              {
-                borderBottomColor: activeTab === 'jobs' ? '#3DD5DC' : 'transparent',
-              },
+              activeTab === 'jobs' ? detailStyles.tabBorderActive : detailStyles.tabBorderInactive,
             ]}
             onPress={handleJobsTabPress}
           >
             <Text
               style={[
                 detailStyles.tabButtonText,
-                {
-                  fontWeight: activeTab === 'jobs' ? '700' : '600',
-                  color: activeTab === 'jobs' ? '#3DD5DC' : '#999999',
-                },
+                activeTab === 'jobs' ? detailStyles.tabButtonActive : detailStyles.tabButtonInactive,
               ]}
             >
               Jobs ({companyJobs.length})
@@ -247,7 +245,7 @@ export default function CompanyDetailScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <View style={[styles.companyInfoRow, { marginTop: 12 }]}>
+                <View style={[styles.companyInfoRow, detailStyles.companyInfoRowWithMargin]}>
                   <Ionicons name="briefcase-outline" size={20} color="#3DD5DC" />
                   <Text style={detailStyles.jobCountText}>
                     {jobCount} Open Position{jobCount !== 1 ? 's' : ''}
@@ -293,10 +291,7 @@ export default function CompanyDetailScreen() {
                           onPressOut={() => setSelectedJobId(null)}
                           style={[
                             jobListStyles.jobCard,
-                            {
-                              borderWidth: 2,
-                              borderColor: isSelected ? '#3DD5DC' : 'transparent',
-                            },
+                            selectedJobId === job.id ? detailStyles.jobCardSelected : detailStyles.jobCardUnselected,
                           ]}
                           activeOpacity={1}
                           onPress={() => {
@@ -314,8 +309,6 @@ export default function CompanyDetailScreen() {
                               <Ionicons name="bookmark-outline" size={22} color="#666" />
                             </TouchableOpacity>
                           </View>
-
-                          <Text style={jobListStyles.jobCompany}>{job.company}</Text>
 
                           <View style={jobListStyles.jobInfo}>
                             <View style={jobListStyles.jobInfoItem}>
@@ -335,13 +328,15 @@ export default function CompanyDetailScreen() {
                             Expiration: {job.expirationDate}
                           </Text>
 
-                          <View style={jobListStyles.jobTags}>
-                            {job.tags.map((tag: string, index: number) => (
-                              <View key={index} style={jobListStyles.jobTag}>
-                                <Text style={jobListStyles.jobTagText}>{tag}</Text>
-                              </View>
-                            ))}
-                          </View>
+                          {job.tags && job.tags.length > 0 && (
+                            <View style={jobListStyles.jobTags}>
+                              {job.tags.map((tag: string, index: number) => (
+                                <View key={index} style={jobListStyles.jobTag}>
+                                  <Text style={jobListStyles.jobTagText}>{tag}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          )}
 
                           <Text style={jobListStyles.jobPostedTime}>{job.postedTime}</Text>
                         </TouchableOpacity>
@@ -374,7 +369,7 @@ export default function CompanyDetailScreen() {
           </View>
         )}
 
-        <View style={{ height: Platform.OS === 'ios' ? 20 : 10 }} />
+        <View style={detailStyles.bottomPadding} />
       </ScrollView>
     </View>
   );

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 // ✅ CompanyDetail Screen Styles
 // Các styles riêng cho màn hình chi tiết công ty (CompanyDetailScreen)
@@ -108,5 +108,53 @@ export const companyDetailStyles = StyleSheet.create({
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
+  },
+
+  // ✅ Bottom Padding for Tab Bar
+  bottomPadding: {
+    height: Platform.OS === 'ios' ? 20 : 10,
+  },
+
+  // ✅ Header Logo Background
+  headerLogoBackground: {
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+
+  // ✅ Company Info Row with margin
+  companyInfoRowWithMargin: {
+    marginTop: 12,
+  },
+
+  // ✅ Tab Button Dynamic Styles
+  tabButtonActive: {
+    fontWeight: '700',
+    color: '#3DD5DC',
+  },
+
+  tabButtonInactive: {
+    fontWeight: '600',
+    color: '#999999',
+  },
+
+  tabBorderActive: {
+    borderBottomColor: '#3DD5DC',
+  },
+
+  tabBorderInactive: {
+    borderBottomColor: 'transparent',
+  },
+
+  // ✅ Job Card Selected Style
+  jobCardSelected: {
+    borderWidth: 2,
+    borderColor: '#3DD5DC',
+  },
+
+  jobCardUnselected: {
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
 });
