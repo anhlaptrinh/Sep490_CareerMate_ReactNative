@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { jobStyles } from '../styles/JobStyles';
+import { errorStyles } from '../styles/ErrorStyles';
 import { useNavigation } from '@react-navigation/native';
 import { JobStackParamList } from '../navigation/JobStackNavigator';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,6 +34,8 @@ export default function LatestJobsScreen({ navigation }: Props) {
 
   // ✅ Get JobRepo từ DI container
   const jobRepository = container.get<JobRepo>(TYPES.JobRepo);
+  const styles = jobStyles;
+  const errorStyle = errorStyles;
 
   // ✅ UseEffect - Fetch jobs khi component mount (page 0)
   useEffect(() => {
@@ -96,9 +99,9 @@ export default function LatestJobsScreen({ navigation }: Props) {
   // ✅ Render loading state
   if (isLoading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, errorStyle.loadingContainer]}>
         <ActivityIndicator size="large" color="#3DD5DC" />
-        <Text style={{ marginTop: 16, color: '#999999' }}>Loading jobs...</Text>
+        <Text style={errorStyle.loadingText}>Loading jobs...</Text>
       </View>
     );
   }
@@ -106,12 +109,10 @@ export default function LatestJobsScreen({ navigation }: Props) {
   // ✅ Render error state
   if (error) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, errorStyle.errorContainer]}>
         <Ionicons name="alert-circle-outline" size={48} color="#3DD5DC" />
-        <Text style={{ marginTop: 16, color: '#3DD5DC', fontSize: 16, fontWeight: '600' }}>
-          Error loading jobs
-        </Text>
-        <Text style={{ marginTop: 8, color: '#666666', textAlign: 'center' }}>{error}</Text>
+        <Text style={errorStyle.errorTitle}>Error loading jobs</Text>
+        <Text style={errorStyle.errorMessage}>{error}</Text>
       </View>
     );
   }

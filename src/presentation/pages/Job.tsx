@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CompanyCard from '../components/CompanyCard';
 import AppHeader from '../components/AppHeader';
 import { jobStyles } from '../styles/JobStyles';
+import { errorStyles } from '../styles/ErrorStyles';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -41,6 +42,7 @@ export default function JobScreen() {
   const [error, setError] = useState<string | null>(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const styles = jobStyles;
+  const errorStyle = errorStyles;
   const withAuth = useRequireAuth();
 
   // ✅ Get JobRepo từ DI container
@@ -88,9 +90,9 @@ export default function JobScreen() {
   // ✅ Render loading state
   if (isLoading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, errorStyle.loadingContainer]}>
         <ActivityIndicator size="large" color="#3DD5DC" />
-        <Text style={{ marginTop: 16, color: '#999999' }}>Loading jobs...</Text>
+        <Text style={errorStyle.loadingText}>Loading jobs...</Text>
       </View>
     );
   }
@@ -98,14 +100,10 @@ export default function JobScreen() {
   // ✅ Render error state
   if (error) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, errorStyle.errorContainer]}>
         <Ionicons name="alert-circle-outline" size={48} color="#3DD5DC" />
-        <Text style={{ marginTop: 16, color: '#3DD5DC', fontSize: 16, fontWeight: '600' }}>
-          Error loading jobs
-        </Text>
-        <Text style={{ marginTop: 8, color: '#999999', textAlign: 'center', paddingHorizontal: 16 }}>
-          {error}
-        </Text>
+        <Text style={errorStyle.errorTitle}>Error loading jobs</Text>
+        <Text style={errorStyle.errorMessage}>{error}</Text>
       </View>
     );
   }

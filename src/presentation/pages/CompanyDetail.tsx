@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { companyStyles } from '../styles/CompanyStyles';
 import { companyDetailStyles } from '../styles/CompanyDetailStyles';
 import { jobStyles } from '../styles/JobStyles';
+import { errorStyles } from '../styles/ErrorStyles';
 import { JobStackParamList } from '../navigation/JobStackNavigator';
 import { CompanyData } from '../types/company';
 import { container } from '../../di/dependencies';
@@ -30,6 +31,7 @@ export default function CompanyDetailScreen() {
   const styles = companyStyles;
   const detailStyles = companyDetailStyles;
   const jobListStyles = jobStyles;
+  const errorStyle = errorStyles;
   const [activeTab, setActiveTab] = useState<'about' | 'jobs'>('about');
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [companyDetail, setCompanyDetail] = useState<any>(null);
@@ -267,14 +269,14 @@ export default function CompanyDetailScreen() {
           // ✅ Jobs Tab - Load từ API với phân trang
           <View style={jobListStyles.section}>
             {isLoadingJobs && companyJobs.length === 0 ? (
-              <View style={[jobListStyles.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }]}>
+              <View style={[jobListStyles.container, errorStyle.loadingContainer, errorStyle.emptyContainer]}>
                 <ActivityIndicator size="large" color="#3DD5DC" />
-                <Text style={{ marginTop: 16, color: '#999999' }}>Loading jobs...</Text>
+                <Text style={errorStyle.loadingText}>Loading jobs...</Text>
               </View>
             ) : error ? (
-              <View style={[jobListStyles.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }]}>
+              <View style={[jobListStyles.container, errorStyle.errorContainer, errorStyle.emptyContainer]}>
                 <Ionicons name="alert-circle-outline" size={48} color="#FF6B35" />
-                <Text style={{ marginTop: 16, color: '#FF6B35', fontSize: 14, fontWeight: '600' }}>
+                <Text style={[errorStyle.errorTitle, { color: '#FF6B35' }]}>
                   Error loading jobs
                 </Text>
               </View>
@@ -353,23 +355,16 @@ export default function CompanyDetailScreen() {
                     )}
 
                     {isLoadingJobs && (
-                      <View style={{ paddingVertical: 16, alignItems: 'center' }}>
+                      <View style={errorStyle.loadingMoreContainer}>
                         <ActivityIndicator size="small" color="#3DD5DC" />
-                        <Text style={{ marginTop: 8, color: '#999999', fontSize: 12 }}>Loading more...</Text>
+                        <Text style={errorStyle.loadingMoreText}>Loading more...</Text>
                       </View>
                     )}
                   </>
                 ) : (
                   <View style={detailStyles.emptyJobsContent}>
                     <Ionicons name="briefcase-outline" size={40} color="#CCCCCC" />
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: '#999999',
-                        marginTop: 12,
-                        textAlign: 'center',
-                      }}
-                    >
+                    <Text style={errorStyle.emptyText}>
                       No open positions at the moment
                     </Text>
                   </View>

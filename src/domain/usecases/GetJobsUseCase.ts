@@ -27,6 +27,7 @@ export const mapJobsForUI = (jobs: JobPosting[]): MappedJob[] => {
     postedTime: job.postTime,
     expirationDate: job.expirationDate,
     yearsOfExperience: job.yearsOfExperience,
+    recruiterId: job.recruiterInfo.recruiterId,
   }));
 };
 
