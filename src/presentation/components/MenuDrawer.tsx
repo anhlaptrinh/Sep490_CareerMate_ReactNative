@@ -10,8 +10,11 @@ import {
   Animated,
   Platform,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useAuthStore } from '../state/useAuthStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -34,9 +37,36 @@ const menuItems = [
 ];
 
 export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userName = 'Guest User', onNavigateToLogin }: MenuDrawerProps) {
+  const navigation = useNavigation<any>();
+  const { logout } = useAuthStore();
   const [isVisible, setIsVisible] = React.useState(visible);
   const slideAnim = React.useRef(new Animated.Value(-screenWidth * 0.85)).current;
   const backdropOpacity = React.useRef(new Animated.Value(0)).current;
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Đăng xuất',
+          style: 'destructive',
+          onPress: async () => {
+            onClose();
+            await logout();
+            // Navigate to Welcome screen after logout
+            setTimeout(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Auth', params: { screen: 'Welcome' } }],
+              });
+            }, 300);
+          },
+        },
+      ]
+    );
+  };
 
   React.useEffect(() => {
     if (visible) {
@@ -148,7 +178,10 @@ export default function MenuDrawer({ visible, onClose, isLoggedIn = false, userN
 
             {/* Sign Out (only when logged in) */}
             {isLoggedIn && (
-              <TouchableOpacity style={styles.signOutButton}>
+              <TouchableOpacity 
+                style={styles.signOutButton}
+                onPress={handleLogout}
+              >
                 <Text style={styles.signOutText}>Sign Out</Text>
               </TouchableOpacity>
             )}

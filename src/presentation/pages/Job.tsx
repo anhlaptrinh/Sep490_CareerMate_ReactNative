@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CompanyCard from '../components/CompanyCard';
 import AppHeader from '../components/AppHeader';
 import { jobStyles } from '../styles/JobStyles';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { JobStackParamList } from '../navigation/JobStackNavigator';
@@ -30,6 +31,16 @@ export default function JobScreen() {
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const styles = jobStyles;
+  const withAuth = useRequireAuth();
+
+  // Handler functions with auth protection
+  const handleBookmarkCompany = withAuth((companyId: string) => {
+    // TODO: Call API to save company bookmark
+  }, 'Please login to bookmark companies');
+
+  const handleBookmarkJob = withAuth((jobId: string) => {
+    // TODO: Call API to save job bookmark
+  }, 'Please login to bookmark jobs');
   // Dùng useNavigation với type đã khai báo
   const navigation = useNavigation<JobScreenNavigationProp>();
 

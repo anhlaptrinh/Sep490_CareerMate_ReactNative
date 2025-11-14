@@ -69,6 +69,36 @@ export const profileStyles = StyleSheet.create({
     color: '#666666',
     marginBottom: 16,
   },
+  userInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    padding: 16,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+  },
+  userAvatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  userFullName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000000',
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#666666',
+  },
   authButton: {
     backgroundColor: '#FFFFFF',
     borderWidth: 2,

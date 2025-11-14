@@ -12,14 +12,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import MenuDrawer from './MenuDrawer';
+import { useAuthStore } from '../state/useAuthStore';
 
 interface AppHeaderProps {
   scrollY?: Animated.Value;
   searchQuery?: string;
   onSearchChange?: (text: string) => void;
   showSearch?: boolean;
-  isLoggedIn?: boolean;
-  userName?: string;
 }
 
 export default function AppHeader({ 
@@ -27,11 +26,10 @@ export default function AppHeader({
   searchQuery = '', 
   onSearchChange,
   showSearch = true,
-  isLoggedIn = false,
-  userName = 'Guest User',
 }: AppHeaderProps) {
   const navigation = useNavigation<any>();
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const { isAuthenticated, user } = useAuthStore();
 
   const headerOpacity = scrollY ? scrollY.interpolate({
     inputRange: [0, 100],
@@ -64,8 +62,8 @@ export default function AppHeader({
       <MenuDrawer 
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
-        isLoggedIn={isLoggedIn}
-        userName={userName}
+        isLoggedIn={isAuthenticated}
+        userName={user?.fullname || 'Guest User'}
         onNavigateToLogin={() => navigation.navigate('Auth', { screen: 'Login' })}
       />
 
@@ -222,6 +220,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF0000',
     borderWidth: 1,
     borderColor: '#3DD5DC',
+  },
+  userButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    maxWidth: 140,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userNameText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    maxWidth: 90,
   },
   searchSection: {
     paddingHorizontal: 16,

@@ -24,6 +24,14 @@ export default function SignUpScreen() {
 
   const styles = signUpStyles;
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('Welcome');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#3DD5DC" />
@@ -31,7 +39,7 @@ export default function SignUpScreen() {
       {/* Back Button */}
       <TouchableOpacity 
         style={styles.backButton}
-        onPress={() => navigation.navigate('Welcome')}
+        onPress={handleBack}
       >
         <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
       </TouchableOpacity>
