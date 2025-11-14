@@ -6,5 +6,6 @@ export const TYPES = {
   LoginUseCase: Symbol.for("LoginUseCase"),
   LogoutRepo: Symbol.for("LogoutRepo"),
   SignUpRepo: Symbol.for("SignUpRepo"),
+  SignUpUseCase: Symbol.for("SignUpUseCase"),
   LogoutUseCase: Symbol.for("LogoutUseCase"),
 };

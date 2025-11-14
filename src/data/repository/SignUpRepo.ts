@@ -1,5 +1,6 @@
+import { SignUpRequest } from "../../domain/models/Authentication";
 
 
 export interface SignUpRepo {
-    signUp(username: string, password: string, email: string): Promise<void>;
+    signUp(payload: SignUpRequest): Promise<void>;
 }

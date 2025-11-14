@@ -5,6 +5,7 @@ import { ApiClient } from "../apis/apiClient";
 import { TYPES } from "../../di/types";
 import { SignUpRepo } from "./SignUpRepo";
 import "reflect-metadata";
+import { SignUpRequest } from "../../domain/models/Authentication";
 
 @injectable()
 class SignUpRepoImpl implements SignUpRepo {
@@ -14,8 +15,8 @@ class SignUpRepoImpl implements SignUpRepo {
         this.apiClient = apiClient;
     }
 
-    async signUp(username: string, password: string, email: string): Promise<void> {
-        await this.apiClient.post("/auth/signup", { username, password, email });
+    async signUp(payload: SignUpRequest): Promise<void> {
+        await this.apiClient.post("/users/sign-up", payload);
     }
 }
 

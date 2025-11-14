@@ -1,5 +1,5 @@
 
-import { AuthResponse } from "../../domain/models/AuthResponse";
+import { AuthResponse } from "../../domain/models/Authentication";
 import { ApiClient } from "../apis/apiClient";
 import { TYPES } from "../../di/types";
 import { LoginRepo } from "./LoginRepo";
