@@ -61,14 +61,9 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     if (isAuthenticated && profileId) {
-      console.log('Triggering fetchAppliedJobs with profileId:', profileId);
       fetchAppliedJobs();
     }
   }, [isAuthenticated, profileId]);
-
-  useEffect(() => {
-    console.log('appliedJobs state updated:', appliedJobs?.length ?? 'undefined');
-  }, [appliedJobs]);
 
   const fetchProfile = async () => {
     setLoading(true);
@@ -111,11 +106,9 @@ export default function ProfileScreen() {
 
   const fetchAppliedJobs = async (page: number = 0) => {
     if (!profileId) {
-      console.log('No profileId, skipping fetchAppliedJobs');
       return;
     }
     
-    console.log('Fetching applied jobs for candidateId:', profileId, 'page:', page);
     setLoadingJobs(true);
     try {
       const candidateRepo = container.get<CandidateRepo>(TYPES.CandidateRepo);
@@ -125,8 +118,6 @@ export default function ProfileScreen() {
         page,
         JOBS_PER_PAGE
       );
-      
-      console.log('Applied jobs response:', response);
       
       if (response && response.result) {
         // Check if result is paginated or plain array
@@ -142,8 +133,6 @@ export default function ProfileScreen() {
             totalPages: number;
           };
           
-          console.log('Paginated jobs:', paginatedResult.content.length, 'of', paginatedResult.totalElements);
-          
           if (page === 0) {
             setAppliedJobs(paginatedResult.content);
           } else {
@@ -154,7 +143,6 @@ export default function ProfileScreen() {
         } else {
           // API returns plain array - implement client-side pagination
           const allJobs = response.result as JobApplicationData[];
-          console.log('Jobs array (client-side pagination):', allJobs.length, 'total');
           
           // Calculate pagination on client side
           const startIndex = page * JOBS_PER_PAGE;
@@ -572,25 +560,19 @@ export default function ProfileScreen() {
           {/* Applied Jobs List */}
           {activeFilter === 'Applied' && (
             <>
-              <Text style={{ padding: 10, color: '#000' }}>
-                Debug: Active Filter = {activeFilter}, Jobs Count = {appliedJobs?.length ?? 'undefined'}, Loading = {loadingJobs ? 'true' : 'false'}
-              </Text>
               {loadingJobs ? (
                 <ActivityIndicator size="large" color="#3DD5DC" style={{ marginVertical: 40 }} />
               ) : appliedJobs && appliedJobs.length > 0 ? (
                 <View>
-                  {appliedJobs.map((job) => {
-                    console.log('Rendering job:', job.id, job.jobTitle);
-                    return (
-                      <AppliedJobCard
-                        key={job.id}
-                        application={job}
-                        onPress={() => {
-                          console.log('Job pressed:', job.id);
-                        }}
-                      />
-                    );
-                  })}
+                  {appliedJobs.map((job) => (
+                    <AppliedJobCard
+                      key={job.id}
+                      application={job}
+                      onPress={() => {
+                        // Navigate to job detail
+                      }}
+                    />
+                  ))}
                   
                   {/* Load More / Show Less Buttons */}
                   <View style={styles.paginationButtons}>
