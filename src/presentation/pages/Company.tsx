@@ -53,15 +53,17 @@ export default function CompanyScreen() {
 
   // Navigate to CompanyDetailScreen
   const handleCompanyPress = (company: any) => {
-    const companyData = {
-      id: company.id,
-      name: company.name,
-      logoUrl: company.logo,
-      about: `${company.industry} - ${company.employees} employees`,
-      website: 'https://example.com',
-      jobs: [],
-    };
-    navigation.navigate('CompanyDetailScreen', { companyData });
+    // ✅ Pass only company.id to CompanyDetailScreen
+    navigation.navigate('CompanyDetailScreen', {
+      companyData: {
+        id: company.id,
+        name: company.name || '',
+        about: '',
+        website: '',
+        logoUrl: company.logoUrl || '',
+        jobs: [],
+      }
+    });
   };
 
   // Navigate to CompanyListScreen for full pagination

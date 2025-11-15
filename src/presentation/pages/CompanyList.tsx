@@ -81,16 +81,12 @@ export default function CompanyListScreen({ navigation }: Props) {
   };
 
   const handleCompanyPress = (company: any) => {
-    const companyData = {
-      id: company.id,
-      name: company.name,
-      logoUrl: company.logoUrl,
-      about: `${company.industry}`,
-      website: 'https://example.com',
-      address: company.companyAddress,
-      jobs: [],
-    };
-    navigation.navigate('CompanyDetailScreen', { companyData });
+    // ✅ Pass only company.id to CompanyDetailScreen
+    navigation.navigate('CompanyDetailScreen', {
+      companyData: {
+        id: company.id,
+      }
+    });
   };
 
   // ✅ Render loading state
