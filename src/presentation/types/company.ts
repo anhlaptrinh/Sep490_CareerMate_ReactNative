@@ -22,3 +22,17 @@ export interface CompanyListSectionProps {
   onViewMorePress: () => void;
   onBookmarkPress?: (company: Company) => void;
 }
+
+
+export interface TabNavigationProps {
+  activeTab: 'about' | 'jobs';
+  jobsCount: number;
+  onAboutPress: () => void;
+  onJobsPress: () => void;
+}
+
+export interface CompanyHeaderProps {
+  companyDetail: any;
+  jobCount: number;
+  onVisitWebsite: () => void;
+}
