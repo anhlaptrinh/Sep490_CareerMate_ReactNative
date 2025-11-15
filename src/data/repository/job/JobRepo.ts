@@ -4,6 +4,5 @@ import { JobsApiResponse, JobPosting } from "../../../domain/models/JobModel";
 export interface JobRepo {
   getJobs(page?: number, size?: number, sortBy?: string, sortDir?: string): Promise<JobsApiResponse>;
   getJobById(jobId: number): Promise<JobPosting>;
-  getCompanyDetail(recruiterId: number): Promise<any>;
   getCompanyJobs(recruiterId: number, page?: number, size?: number): Promise<JobsApiResponse>;
 }

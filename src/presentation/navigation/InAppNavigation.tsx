@@ -2,13 +2,12 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import JobScreen from '../pages/Job';
-import CompanyScreen from '../pages/Company';
 import BlogScreen from '../pages/Blog';
 import ToolsScreen from '../pages/Tools';
 import ProfileScreen from '../pages/Profile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import JobStackNavigator from './JobStackNavigator';
+import CompanyStackNavigator from './CompanyStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -78,7 +77,7 @@ export default function InAppNavigation() {
       />
       <Tab.Screen
         name="CompanyTab"
-        component={CompanyScreen}
+        component={CompanyStackNavigator}
         options={{ tabBarLabel: 'Companies' }}
       />
       <Tab.Screen

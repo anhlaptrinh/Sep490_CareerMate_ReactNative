@@ -14,6 +14,7 @@ import { SignUpRepo } from "../data/repository/SignUpRepo";
 import { SignUpRepoImpl } from "../data/repository/SignUpRepoImpl";
 import { SignUpUseCase } from "../domain/usecases/SignUpUseCase";
 import { JobRepo, JobRepoImpl } from "../data/repository/job";
+import { CompanyRepo, CompanyRepoImpl } from "../data/repository/company";
 
 const container = new Container();
 
@@ -24,7 +25,9 @@ container.bind<ApiClient>(TYPES.ApiClient).to(ApiClient).inSingletonScope();
 container.bind<LoginRepo>(TYPES.LoginRepo).to(LoginRepoImpl).inSingletonScope();
 container.bind<LogoutRepo>(TYPES.LogoutRepo).to(LogoutRepoImpl).inSingletonScope();
 container.bind<CandidateRepo>(TYPES.CandidateRepo).to(CandidateRepoImpl).inSingletonScope();
-container.bind<SignUpRepo>(TYPES.SignUpRepo).to(SignUpRepoImpl).inSingletonScope();container.bind<JobRepo>(TYPES.JobRepo).to(JobRepoImpl).inSingletonScope();
+container.bind<SignUpRepo>(TYPES.SignUpRepo).to(SignUpRepoImpl).inSingletonScope();
+container.bind<JobRepo>(TYPES.JobRepo).to(JobRepoImpl).inSingletonScope();
+container.bind<CompanyRepo>(TYPES.CompanyRepo).to(CompanyRepoImpl).inSingletonScope();
 
 // UseCase
 container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase).inTransientScope();

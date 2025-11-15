@@ -55,22 +55,6 @@ class JobRepoImpl implements JobRepo {
   }
 
   /**
-   * Lấy chi tiết công ty theo recruiterId
-   * @param recruiterId - ID của recruiter (company)
-   */
-  async getCompanyDetail(recruiterId: number): Promise<any> {
-    try {
-      const response = await this.apiClient.get<any>(
-        `/job-postings/company/${recruiterId}`
-      );
-      return response.result || response;
-    } catch (error) {
-      console.error('JobRepoImpl.getCompanyDetail Error:', error);
-      throw error;
-    }
-  }
-
-  /**
    * Lấy danh sách jobs của một công ty với phân trang
    * @param recruiterId - ID của recruiter (company)
    * @param page - Số trang (mặc định 0)

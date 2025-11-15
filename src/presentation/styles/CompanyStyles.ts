@@ -201,6 +201,8 @@ export const companyStyles = StyleSheet.create({
   companyCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
     padding: 16,
     marginBottom: 12,
     shadowColor: '#000',
@@ -225,6 +227,7 @@ export const companyStyles = StyleSheet.create({
     backgroundColor: '#F0F9FA',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 6,
   },
   bookmarkButton: {
     padding: 4,
@@ -233,7 +236,7 @@ export const companyStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: '#000000',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   companyTags: {
     flexDirection: 'row',

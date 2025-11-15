@@ -21,6 +21,7 @@ import { CompanyData } from '../types/company';
 import { container } from '../../di/dependencies';
 import { TYPES } from '../../di/types';
 import { JobRepo } from '../../data/repository/job';
+import { CompanyRepo } from '../../data/repository/company';
 
 // ✅ Transform company job data từ API sang format UI
 const mapCompanyJobForUI = (job: any) => ({
@@ -58,8 +59,9 @@ export default function CompanyDetailScreen() {
   const { companyData } = route.params as { companyData: CompanyData };
   const PAGE_SIZE = 5;
 
-  // ✅ Get JobRepo từ DI container
+  // ✅ Get JobRepo và CompanyRepo từ DI container
   const jobRepository = container.get<JobRepo>(TYPES.JobRepo);
+  const companyRepository = container.get<CompanyRepo>(TYPES.CompanyRepo);
 
   // ✅ Load company detail khi component mount
   useEffect(() => {
@@ -69,7 +71,7 @@ export default function CompanyDetailScreen() {
         setError(null);
 
         // Gọi API để lấy chi tiết công ty
-        const detail = await jobRepository.getCompanyDetail(companyData.id);
+        const detail = await companyRepository.getCompanyDetail(companyData.id);
         setCompanyDetail(detail);
         console.log('✅ Company detail loaded:', detail);
       } catch (err) {

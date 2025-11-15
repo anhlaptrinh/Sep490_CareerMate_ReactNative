@@ -3,6 +3,7 @@ export const TYPES = {
   LoginRepo: Symbol.for("LoginRepo"),
   CandidateRepo: Symbol.for("CandidateRepo"),
   JobRepo: Symbol.for("JobRepo"),
+  CompanyRepo: Symbol.for("CompanyRepo"),
   LoginUseCase: Symbol.for("LoginUseCase"),
   LogoutRepo: Symbol.for("LogoutRepo"),
   SignUpRepo: Symbol.for("SignUpRepo"),
