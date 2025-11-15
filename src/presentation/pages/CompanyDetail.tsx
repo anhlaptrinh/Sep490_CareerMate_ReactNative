@@ -16,7 +16,7 @@ import { companyStyles } from '../styles/CompanyStyles';
 import { companyDetailStyles } from '../styles/CompanyDetailStyles';
 import { jobStyles } from '../styles/JobStyles';
 import { errorStyles } from '../styles/ErrorStyles';
-import { JobStackParamList } from '../navigation/JobStackNavigator';
+import { CompanyStackParamList } from '../navigation/CompanyStackNavigator';
 import { CompanyData } from '../types/company';
 import { container } from '../../di/dependencies';
 import { TYPES } from '../../di/types';
@@ -37,7 +37,7 @@ const mapCompanyJobForUI = (job: any) => ({
   postedTime: job.postTime,
 });
 
-type CompanyDetailScreenNavigationProp = NativeStackNavigationProp<JobStackParamList, 'CompanyDetailScreen'>;
+type CompanyDetailScreenNavigationProp = NativeStackNavigationProp<CompanyStackParamList, 'CompanyDetailScreen'>;
 
 export default function CompanyDetailScreen() {
   const route = useRoute<any>();

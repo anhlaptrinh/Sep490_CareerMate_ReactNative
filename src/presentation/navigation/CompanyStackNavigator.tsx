@@ -2,12 +2,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CompanyScreen from '../pages/Company';
 import CompanyListScreen from '../pages/CompanyList';
 import CompanyDetailScreen from '../pages/CompanyDetail';
+import JobDetailScreen from '../pages/JobDetail';
 
 // ✅ Khai báo kiểu cho navigator
 export type CompanyStackParamList = {
   CompanyScreen: undefined;
   CompanyListScreen: { companyAddress?: string };
   CompanyDetailScreen: { companyData: any };
+  JobDetailScreen: { jobId: number };
 };
 
 // ✅ Tạo stack navigator với type đã khai báo
@@ -39,6 +41,17 @@ export default function CompanyStackNavigator() {
         component={CompanyDetailScreen}
         options={{
           title: 'Company Detail',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#00B8C5' },
+          headerTintColor: '#fff',
+        }}
+      />
+      {/* JobDetailScreen hiển thị chi tiết công việc */}
+      <CompanyStack.Screen
+        name="JobDetailScreen"
+        component={JobDetailScreen}
+        options={{
+          title: 'Job Detail',
           headerShown: true,
           headerStyle: { backgroundColor: '#00B8C5' },
           headerTintColor: '#fff',
