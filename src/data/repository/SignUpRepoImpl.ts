@@ -1,7 +1,7 @@
 
 //implementation of SignUpRepo
 import { injectable, inject } from "inversify";
-import { ApiClient } from "../apis/ApiClient";
+import { ApiClient } from "../apis/apiClient";
 import { TYPES } from "../../di/types";
 import { SignUpRepo } from "./SignUpRepo";
 import "reflect-metadata";

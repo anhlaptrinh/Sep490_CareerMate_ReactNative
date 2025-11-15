@@ -24,26 +24,26 @@ export default function AppNavigation() {
       }}
     >
       {/* Auth Flow - Stack Navigator */}
-      <RootStack.Screen 
-        name="Auth" 
+      <RootStack.Screen
+        name="Auth"
         component={AuthNavigation}
         options={{
           animation: 'fade',
         }}
       />
-      
+
       {/* Main App Flow - Bottom Tabs Navigator */}
-      <RootStack.Screen 
-        name="MainApp" 
+      <RootStack.Screen
+        name="MainApp"
         component={InAppNavigation}
         options={{
           animation: 'fade',
         }}
       />
-      
+
       {/* Modal Screens */}
-      <RootStack.Screen 
-        name="Notification" 
+      <RootStack.Screen
+        name="Notification"
         component={NotificationScreen}
         options={{
           presentation: 'modal',

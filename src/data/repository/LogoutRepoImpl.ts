@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { ApiClient } from "../apis/ApiClient";
+import { ApiClient } from "../apis/apiClient";
 import { TYPES } from "../../di/types";
 import { LogoutRepo } from "./LogoutRepo";
 import { SecureStorage } from "../../utils/SecureStorage";

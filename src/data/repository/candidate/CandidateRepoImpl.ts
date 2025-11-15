@@ -1,7 +1,7 @@
 
 //implement candidate repo
 import { CandidateRequest, CandidateResponse, JobApplicationsResponse, JobApplicationStatus } from "../../../domain/models/Candidate";
-import { ApiClient } from "../../apis/ApiClient";
+import { ApiClient } from "../../apis/apiClient";
 import { TYPES } from "../../../di/types";
 import { CandidateRepo } from "./CandidateRepo";
 import { injectable, inject } from "inversify";

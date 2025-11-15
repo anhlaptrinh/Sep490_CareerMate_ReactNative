@@ -1,6 +1,6 @@
 
 import { AuthResponse } from "../../domain/models/Authentication";
-import { ApiClient } from "../apis/ApiClient";
+import { ApiClient } from "../apis/apiClient";
 import { TYPES } from "../../di/types";
 import { LoginRepo } from "./LoginRepo";
 import { injectable, inject } from "inversify";
@@ -18,7 +18,7 @@ class LoginRepoImpl implements LoginRepo {
     async login(email: string, password: string): Promise<AuthResponse> {
         try {
             const body = { email, password };
-            const response = await this.apiClient.post<AuthResponse>("/auth/token/candidate", body);
+            const response = await this.apiClient.post<AuthResponse>("/auth/token", body);
             
             // ✅ Save access token and expiry to secure storage
             const { accessToken, expiresIn } = response.result;

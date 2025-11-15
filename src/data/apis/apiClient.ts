@@ -14,7 +14,7 @@ export class ApiClient {
 
   constructor() {
     const API_URL = Constants.expoConfig?.extra?.API_URL || "http://localhost:8080";
-    
+
     this.instance = axios.create({
       baseURL: API_URL,
       headers: { "Content-Type": "application/json" },
@@ -30,11 +30,11 @@ export class ApiClient {
     this.instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
         const token = await SecureStorage.getAccessToken();
-        
+
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
-        
+
         return config;
       },
       (error) => Promise.reject(error)
@@ -92,7 +92,7 @@ export class ApiClient {
             await SecureStorage.clearAll();
             this.failedQueue.forEach((prom) => prom.reject(refreshError));
             this.failedQueue = [];
-            
+
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;

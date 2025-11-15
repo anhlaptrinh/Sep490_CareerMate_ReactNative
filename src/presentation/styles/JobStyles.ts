@@ -45,6 +45,7 @@ export const jobStyles = StyleSheet.create({
   },
   section: {
     paddingVertical: 10,
+    paddingHorizontal: 16,
     backgroundColor: '#F5F5F5',
   },
   sectionHeader: {
@@ -58,6 +59,7 @@ export const jobStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#000000',
+    marginBottom: 12,
   },
   seeMoreText: {
     fontSize: 14,
@@ -113,7 +115,7 @@ export const jobStyles = StyleSheet.create({
   jobTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000000',
+    color: '#3DD5DC',
     flex: 1,
   },
   jobTypeBadge: {
@@ -151,7 +153,7 @@ export const jobStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 5,
   },
   jobTag: {
     backgroundColor: '#F5F5F5',
@@ -167,5 +169,197 @@ export const jobStyles = StyleSheet.create({
     fontSize: 12,
     color: '#999999',
     marginTop: 4,
+  },
+  screenTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  viewMoreButton: {
+    backgroundColor: '#00B8C5',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  viewMoreText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+
+  // === Job Detail Screen Styles ===
+  detailCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  detailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  companyLogo: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    marginRight: 16,
+    backgroundColor: '#F5F5F5',
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  detailJobTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#3DD5DC',
+    marginBottom: 4,
+  },
+  detailJobCompany: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  salaryBadge: {
+    backgroundColor: '#E8F8F9',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  salaryText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#00B8C5',
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 16,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flex: 1,
+    gap: 12,
+  },
+  infoIcon: {
+    fontSize: 24,
+  },
+  infoLabel: {
+    fontSize: 12,
+    color: '#999999',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1A1A1A',
+  },
+  descriptionText: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333333',
+  },
+  benefitItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    gap: 12,
+  },
+  benefitIcon: {
+    fontSize: 20,
+  },
+  benefitText: {
+    flex: 1,
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#333333',
+  },
+  skillsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  skillTag: {
+    backgroundColor: '#F0F9FF',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#3DD5DC',
+  },
+  skillTagText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#00B8C5',
+  },
+  websiteCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 16,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  websiteIcon: {
+    fontSize: 28,
+    marginRight: 16,
+  },
+  websiteTextContainer: {
+    flex: 1,
+  },
+  websiteLabel: {
+    fontSize: 12,
+    color: '#999999',
+    marginBottom: 4,
+  },
+  websiteLink: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3DD5DC',
+  },
+  websiteArrow: {
+    fontSize: 32,
+    color: '#CCCCCC',
+    fontWeight: '300',
+  },
+  relatedJobCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });
