@@ -15,6 +15,7 @@ import { SignUpRepoImpl } from "../data/repository/SignUpRepoImpl";
 import { SignUpUseCase } from "../domain/usecases/SignUpUseCase";
 import { JobRepo, JobRepoImpl } from "../data/repository/job";
 import { CompanyRepo, CompanyRepoImpl } from "../data/repository/company";
+import { JdSkillRepo, JdSkillRepoImpl } from "../data/repository/jdskill";
 
 const container = new Container();
 
@@ -28,6 +29,7 @@ container.bind<CandidateRepo>(TYPES.CandidateRepo).to(CandidateRepoImpl).inSingl
 container.bind<SignUpRepo>(TYPES.SignUpRepo).to(SignUpRepoImpl).inSingletonScope();
 container.bind<JobRepo>(TYPES.JobRepo).to(JobRepoImpl).inSingletonScope();
 container.bind<CompanyRepo>(TYPES.CompanyRepo).to(CompanyRepoImpl).inSingletonScope();
+container.bind<JdSkillRepo>(TYPES.JdSkillRepo).to(JdSkillRepoImpl).inSingletonScope();
 
 // UseCase
 container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase).inTransientScope();

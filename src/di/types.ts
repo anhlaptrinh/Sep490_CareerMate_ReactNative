@@ -4,6 +4,7 @@ export const TYPES = {
   CandidateRepo: Symbol.for("CandidateRepo"),
   JobRepo: Symbol.for("JobRepo"),
   CompanyRepo: Symbol.for("CompanyRepo"),
+  JdSkillRepo: Symbol.for("JdSkillRepo"),
   LoginUseCase: Symbol.for("LoginUseCase"),
   LogoutRepo: Symbol.for("LogoutRepo"),
   SignUpRepo: Symbol.for("SignUpRepo"),
