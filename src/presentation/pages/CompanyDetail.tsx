@@ -134,10 +134,33 @@ export default function CompanyDetailScreen() {
   const jobCount = useMemo(() => companyJobs.length, [companyJobs]);
 
   const handleVisitWebsite = () => {
-    if (companyData.website) {
-      Linking.openURL(companyData.website);
+    if (companyDetail?.website) {
+      Linking.openURL(companyDetail.website);
     }
   };
+
+  // ✅ Show loading state
+  if (isLoadingDetail) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#3DD5DC" />
+        <Text style={errorStyle.loadingText}>Loading company details...</Text>
+      </View>
+    );
+  }
+
+  // ✅ Show error state if company detail failed to load
+  if (error || !companyDetail) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Ionicons name="alert-circle-outline" size={48} color="#FF6B35" />
+        <Text style={[errorStyle.errorTitle, { color: '#FF6B35' }]}>
+          Error loading company
+        </Text>
+        <Text style={errorStyle.errorMessage}>{error || 'Company not found'}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -149,15 +172,17 @@ export default function CompanyDetailScreen() {
         {/* Company Header Banner */}
         <View style={styles.spotlightCard}>
           <View style={detailStyles.headerLogoBackground}>
-            <Image
-              source={{ uri: companyData.logoUrl }}
-              style={styles.companyDetailLogo}
-              onError={() => console.log('Image load error')}
-            />
+            {companyDetail?.logoUrl && (
+              <Image
+                source={{ uri: companyDetail.logoUrl }}
+                style={styles.companyDetailLogo}
+                onError={() => console.log('Image load error')}
+              />
+            )}
           </View>
 
           <View style={styles.spotlightOverlay}>
-            <Text style={styles.spotlightName}>{companyData.name}</Text>
+            <Text style={styles.spotlightName}>{companyDetail?.companyName || 'Company'}</Text>
 
             <View style={styles.spotlightFooter}>
               <View style={styles.spotlightJobCount}>
@@ -225,7 +250,7 @@ export default function CompanyDetailScreen() {
                   Company Description
                 </Text>
                 <Text style={detailStyles.companyDescriptionText}>
-                  {companyData.about}
+                  {companyDetail?.about || 'No description available'}
                 </Text>
               </View>
 
@@ -235,17 +260,19 @@ export default function CompanyDetailScreen() {
                   Contact Information
                 </Text>
 
-                <View style={styles.companyInfoRow}>
-                  <Ionicons name="globe-outline" size={20} color="#3DD5DC" />
-                  <TouchableOpacity onPress={handleVisitWebsite}>
-                    <Text
-                      style={detailStyles.websiteLinkText}
-                      numberOfLines={1}
-                    >
-                      {companyData.website}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                {companyDetail?.website && (
+                  <View style={styles.companyInfoRow}>
+                    <Ionicons name="globe-outline" size={20} color="#3DD5DC" />
+                    <TouchableOpacity onPress={handleVisitWebsite}>
+                      <Text
+                        style={detailStyles.websiteLinkText}
+                        numberOfLines={1}
+                      >
+                        {companyDetail.website}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
                 <View style={[styles.companyInfoRow, detailStyles.companyInfoRowWithMargin]}>
                   <Ionicons name="briefcase-outline" size={20} color="#3DD5DC" />
