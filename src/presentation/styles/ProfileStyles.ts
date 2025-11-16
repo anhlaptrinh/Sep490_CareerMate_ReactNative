@@ -355,4 +355,30 @@ export const profileStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#666666',
   },
+  recommendationInputs: {
+    marginBottom: 20,
+  },
+  getRecommendationsButton: {
+    backgroundColor: '#3DD5DC',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 8,
+    shadowColor: '#3DD5DC',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  getRecommendationsText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  recommendationsContainer: {
+    marginTop: 8,
+  },
 });
