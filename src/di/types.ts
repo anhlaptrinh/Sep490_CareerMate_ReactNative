@@ -13,4 +13,12 @@ export const TYPES = {
   SignUpUseCase: Symbol.for("SignUpUseCase"),
   LogoutUseCase: Symbol.for("LogoutUseCase"),
   GetJobRecommendationsUseCase: Symbol.for("GetJobRecommendationsUseCase"),
+  
+  // Blog
+  BlogRepo: Symbol.for("BlogRepo"),
+  GetBlogsUseCase: Symbol.for("GetBlogsUseCase"),
+  GetBlogByIdUseCase: Symbol.for("GetBlogByIdUseCase"),
+  GetBlogsByCategoryUseCase: Symbol.for("GetBlogsByCategoryUseCase"),
+  GetRelatedBlogsUseCase: Symbol.for("GetRelatedBlogsUseCase"),
+  SearchBlogsUseCase: Symbol.for("SearchBlogsUseCase"),
 };

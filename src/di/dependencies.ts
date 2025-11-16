@@ -20,6 +20,13 @@ import { JdSkillRepo, JdSkillRepoImpl } from "../data/repository/jdskill";
 import { AIRepo } from "../data/repository/ai/AIRepo";
 import { AIRepoImpl } from "../data/repository/ai/AIRepoImpl";
 import { GetJobRecommendationsUseCase } from "../domain/usecases/GetJobRecommendationsUseCase";
+import { BlogRepo } from "../data/repository/BlogRepo";
+import { BlogRepoImpl } from "../data/repository/BlogRepoImpl";
+import { GetBlogsUseCase } from "../domain/usecases/GetBlogsUseCase";
+import { GetBlogByIdUseCase } from "../domain/usecases/GetBlogByIdUseCase";
+import { GetBlogsByCategoryUseCase } from "../domain/usecases/GetBlogsByCategoryUseCase";
+import { GetRelatedBlogsUseCase } from "../domain/usecases/GetRelatedBlogsUseCase";
+import { SearchBlogsUseCase } from "../domain/usecases/SearchBlogsUseCase";
 
 const container = new Container();
 
@@ -36,11 +43,17 @@ container.bind<JobRepo>(TYPES.JobRepo).to(JobRepoImpl).inSingletonScope();
 container.bind<CompanyRepo>(TYPES.CompanyRepo).to(CompanyRepoImpl).inSingletonScope();
 container.bind<JdSkillRepo>(TYPES.JdSkillRepo).to(JdSkillRepoImpl).inSingletonScope();
 container.bind<AIRepo>(TYPES.AIRepo).to(AIRepoImpl).inSingletonScope();
+container.bind<BlogRepo>(TYPES.BlogRepo).to(BlogRepoImpl).inSingletonScope();
 
 // UseCase
 container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase).inTransientScope();
 container.bind<SignUpUseCase>(TYPES.SignUpUseCase).to(SignUpUseCase).inTransientScope();
 container.bind<LogoutUseCase>(TYPES.LogoutUseCase).to(LogoutUseCase).inTransientScope();
 container.bind<GetJobRecommendationsUseCase>(TYPES.GetJobRecommendationsUseCase).to(GetJobRecommendationsUseCase).inTransientScope();
+container.bind<GetBlogsUseCase>(TYPES.GetBlogsUseCase).to(GetBlogsUseCase).inTransientScope();
+container.bind<GetBlogByIdUseCase>(TYPES.GetBlogByIdUseCase).to(GetBlogByIdUseCase).inTransientScope();
+container.bind<GetBlogsByCategoryUseCase>(TYPES.GetBlogsByCategoryUseCase).to(GetBlogsByCategoryUseCase).inTransientScope();
+container.bind<GetRelatedBlogsUseCase>(TYPES.GetRelatedBlogsUseCase).to(GetRelatedBlogsUseCase).inTransientScope();
+container.bind<SearchBlogsUseCase>(TYPES.SearchBlogsUseCase).to(SearchBlogsUseCase).inTransientScope();
 
 export { container };
