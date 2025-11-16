@@ -26,6 +26,7 @@ import { GetBlogsUseCase } from "../domain/usecases/GetBlogsUseCase";
 import { GetBlogByIdUseCase } from "../domain/usecases/GetBlogByIdUseCase";
 import { GetBlogsByCategoryUseCase } from "../domain/usecases/GetBlogsByCategoryUseCase";
 import { GetRelatedBlogsUseCase } from "../domain/usecases/GetRelatedBlogsUseCase";
+import { SearchBlogsUseCase } from "../domain/usecases/SearchBlogsUseCase";
 
 const container = new Container();
 
@@ -53,5 +54,6 @@ container.bind<GetBlogsUseCase>(TYPES.GetBlogsUseCase).to(GetBlogsUseCase).inTra
 container.bind<GetBlogByIdUseCase>(TYPES.GetBlogByIdUseCase).to(GetBlogByIdUseCase).inTransientScope();
 container.bind<GetBlogsByCategoryUseCase>(TYPES.GetBlogsByCategoryUseCase).to(GetBlogsByCategoryUseCase).inTransientScope();
 container.bind<GetRelatedBlogsUseCase>(TYPES.GetRelatedBlogsUseCase).to(GetRelatedBlogsUseCase).inTransientScope();
+container.bind<SearchBlogsUseCase>(TYPES.SearchBlogsUseCase).to(SearchBlogsUseCase).inTransientScope();
 
 export { container };

@@ -20,4 +20,5 @@ export const TYPES = {
   GetBlogByIdUseCase: Symbol.for("GetBlogByIdUseCase"),
   GetBlogsByCategoryUseCase: Symbol.for("GetBlogsByCategoryUseCase"),
   GetRelatedBlogsUseCase: Symbol.for("GetRelatedBlogsUseCase"),
+  SearchBlogsUseCase: Symbol.for("SearchBlogsUseCase"),
 };

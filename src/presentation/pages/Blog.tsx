@@ -38,12 +38,31 @@ export default function BlogScreen() {
     isLoading,
     error,
     fetchBlogs,
+    searchBlogs,
   } = useBlogStore();
 
   // Fetch blogs on component mount
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  // Handle search with debouncing
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      if (searchQuery.trim()) {
+        console.log('🔍 Searching for:', searchQuery);
+        searchBlogs(searchQuery.trim(), { 
+          page: 0, 
+          size: 20 
+        });
+      } else {
+        // If search is cleared, reload initial data
+        loadInitialData();
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(delayedSearch);
+  }, [searchQuery]);
 
   const loadInitialData = async () => {
     try {
@@ -63,6 +82,10 @@ export default function BlogScreen() {
 
   const handleBlogPress = (blog: Blog) => {
     navigation.navigate('BlogDetail', { blogId: blog.id });
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
   };
 
   const handleFeaturedScroll = (event: any) => {
@@ -113,6 +136,7 @@ export default function BlogScreen() {
   // Use featured blogs from store (first 4 blogs) or fallback data
   const featuredBlogs = blogs.length > 0 ? blogs.slice(0, 4) : [];
   const displayBlogs = blogs.length > 0 ? blogs : [];
+  const isSearching = searchQuery.trim().length > 0;
 
   if (isLoading && blogs.length === 0) {
     return (
@@ -157,8 +181,35 @@ export default function BlogScreen() {
           </View>
         )}
 
-        {/* Featured Blog Section - show if we have blogs */}
-        {featuredBlogs.length > 0 && (
+        {/* Search Results Header */}
+        {isSearching && (
+          <View style={{ padding: 16, backgroundColor: '#F0F8FF', margin: 16, borderRadius: 8 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ color: '#3DD5DC', fontSize: 16, fontWeight: '600', flex: 1 }}>
+                {isLoading ? 'Searching...' : `Found ${displayBlogs.length} result(s) for "${searchQuery}"`}
+              </Text>
+              <TouchableOpacity onPress={clearSearch} style={{ padding: 4 }}>
+                <Ionicons name="close-circle" size={24} color="#3DD5DC" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Empty Search State */}
+        {isSearching && !isLoading && displayBlogs.length === 0 && (
+          <View style={{ padding: 40, alignItems: 'center' }}>
+            <Ionicons name="search-outline" size={64} color="#CCC" />
+            <Text style={{ fontSize: 18, color: '#666', marginTop: 16, textAlign: 'center' }}>
+              No blogs found for "{searchQuery}"
+            </Text>
+            <Text style={{ fontSize: 14, color: '#999', marginTop: 8, textAlign: 'center' }}>
+              Try searching with different keywords
+            </Text>
+          </View>
+        )}
+
+        {/* Featured Blog Section - show only when not searching and have blogs */}
+        {!isSearching && featuredBlogs.length > 0 && (
           <View style={styles.featuredSection}>
             <ScrollView
               horizontal
@@ -230,14 +281,18 @@ export default function BlogScreen() {
           </View>
         )}
 
-        {/* Technology Blog Section - show if we have blogs */}
+        {/* Blog List Section - show if we have blogs */}
         {displayBlogs.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Latest Blogs</Text>
-              <TouchableOpacity>
-                <Text style={styles.seeMoreText}>See More</Text>
-              </TouchableOpacity>
+              <Text style={styles.sectionTitle}>
+                {isSearching ? 'Search Results' : 'Latest Blogs'}
+              </Text>
+              {!isSearching && (
+                <TouchableOpacity>
+                  <Text style={styles.seeMoreText}>See More</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <ScrollView

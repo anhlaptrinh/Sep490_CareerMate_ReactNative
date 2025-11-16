@@ -85,10 +85,14 @@ export class BlogRepoImpl implements BlogRepo {
   }
 
   async searchBlogs(query: string, params?: BlogQueryParams): Promise<BlogsApiResponse> {
-    const searchParams = { ...params, search: query };
-    const queryString = this.buildQueryString(searchParams);
+    const queryParts: string[] = [`keyword=${encodeURIComponent(query)}`];
+    
+    if (params?.page !== undefined) queryParts.push(`page=${params.page}`);
+    if (params?.size !== undefined) queryParts.push(`size=${params.size}`);
+    
+    const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
     const url = `/blogs/search${queryString}`;
-    console.log(`🌐 BlogRepo - Fetching: ${url}`);
+    console.log(`🌐 BlogRepo - Searching: ${url}`);
     return await this.apiClient.get<BlogsApiResponse>(url);
   }
 

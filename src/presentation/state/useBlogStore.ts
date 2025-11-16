@@ -5,6 +5,7 @@ import { GetBlogsUseCase } from '../../domain/usecases/GetBlogsUseCase';
 import { GetBlogByIdUseCase } from '../../domain/usecases/GetBlogByIdUseCase';
 import { GetBlogsByCategoryUseCase } from '../../domain/usecases/GetBlogsByCategoryUseCase';
 import { GetRelatedBlogsUseCase } from '../../domain/usecases/GetRelatedBlogsUseCase';
+import { SearchBlogsUseCase } from '../../domain/usecases/SearchBlogsUseCase';
 import { Blog, BlogCategory, BlogQueryParams } from '../../domain/models/Blog';
 
 /**
@@ -43,6 +44,7 @@ interface BlogState {
 
   // Actions
   fetchBlogs: (params?: BlogQueryParams) => Promise<void>;
+  searchBlogs: (query: string, params?: BlogQueryParams) => Promise<void>;
   fetchBlogById: (blogId: number) => Promise<void>;
   fetchBlogsByCategory: (category: BlogCategory, params?: BlogQueryParams) => Promise<void>;
   fetchRelatedBlogs: (blogId: number, limit?: number) => Promise<void>;
@@ -224,6 +226,45 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     } catch (error: any) {
       console.error('❌ Fetch related blogs error:', error);
       set({ relatedBlogs: [] });
+    }
+  },
+
+  /**
+   * Search blogs using dedicated search endpoint
+   */
+  searchBlogs: async (query: string, params?: BlogQueryParams) => {
+    set({ isLoading: true, error: null });
+    try {
+      const useCase = container.get<SearchBlogsUseCase>(TYPES.SearchBlogsUseCase);
+      const response = await useCase.execute(query, params);
+
+      console.log('✅ Search blogs response:', JSON.stringify(response, null, 2));
+
+      // Check if response has the expected structure
+      if (response && response.result && response.result.content) {
+        const mappedBlogs = response.result.content.map((blog: any) => mapApiBlogToBlog(blog));
+        set({
+          blogs: mappedBlogs,
+          currentPage: response.result.page,
+          totalPages: response.result.totalPages,
+          totalElements: response.result.totalElements,
+          isLoading: false,
+        });
+      } else {
+        console.error('⚠️ Unexpected search response structure:', response);
+        set({
+          blogs: [],
+          error: 'Unexpected response format',
+          isLoading: false,
+        });
+      }
+    } catch (error: any) {
+      console.error('❌ Search blogs error:', error);
+      set({
+        error: error.message || 'Failed to search blogs',
+        isLoading: false,
+        blogs: [],
+      });
     }
   },
 
