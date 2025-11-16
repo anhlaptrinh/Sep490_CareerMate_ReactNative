@@ -24,6 +24,11 @@ import { TYPES } from '../../di/types';
 import { CandidateRepo } from '../../data/repository/candidate/CandidateRepo';
 import { Gender, JobApplicationData } from '../../domain/models/Candidate';
 import { AppliedJobCard } from '../components/AppliedJobCard';
+import { SkillSelector } from '../components/SkillSelector';
+import { JobRecommendationCard } from '../components/JobRecommendationCard';
+import { JdSkillRepo, JdSkill } from '../../data/repository/jdskill/JdSkillRepo';
+import { GetJobRecommendationsUseCase } from '../../domain/usecases/GetJobRecommendationsUseCase';
+import { JobRecommendationItem } from '../../domain/models/AIModels';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<any>();
@@ -53,9 +58,17 @@ export default function ProfileScreen() {
   const [activeFilter, setActiveFilter] = useState<'Applied' | 'Saved' | 'Viewed'>('Applied');
   const JOBS_PER_PAGE = 3;
 
+  // Job recommendations states
+  const [availableSkills, setAvailableSkills] = useState<JdSkill[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [loadingSkills, setLoadingSkills] = useState(false);
+  const [recommendations, setRecommendations] = useState<JobRecommendationItem[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchProfile();
+      fetchSkills();
     }
   }, [isAuthenticated]);
 
@@ -101,6 +114,58 @@ export default function ProfileScreen() {
       // Profile might not exist yet, that's okay - show empty form
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSkills = async () => {
+    setLoadingSkills(true);
+    try {
+      const jdSkillRepo = container.get<JdSkillRepo>(TYPES.JdSkillRepo);
+      const skills = await jdSkillRepo.getTopUsedSkills();
+      
+      // Remove duplicates based on skill name (case-insensitive)
+      const uniqueSkills = skills.filter((skill, index, self) => 
+        index === self.findIndex((s) => 
+          s.name.toLowerCase().trim() === skill.name.toLowerCase().trim()
+        )
+      );
+      
+      setAvailableSkills(uniqueSkills);
+    } catch (error: any) {
+      console.error('Error fetching skills:', error);
+    } finally {
+      setLoadingSkills(false);
+    }
+  };
+
+  const fetchJobRecommendations = async () => {
+    if (!profileId || selectedSkills.length === 0 || !title) {
+      Alert.alert('Required', 'Please select at least one skill and ensure your job title is filled');
+      return;
+    }
+
+    setLoadingRecommendations(true);
+    try {
+      const getRecommendationsUseCase = container.get<GetJobRecommendationsUseCase>(
+        TYPES.GetJobRecommendationsUseCase
+      );
+      
+      const response = await getRecommendationsUseCase.execute({
+        candidate_id: parseInt(profileId),
+        skills: selectedSkills,
+        title: title,
+        description: '',
+        top_n: 3,
+      });
+
+      if (response.ok && response.results.content_based) {
+        setRecommendations(response.results.content_based);
+      }
+    } catch (error: any) {
+      console.error('Error fetching recommendations:', error);
+      Alert.alert('Error', `Failed to get job recommendations: ${error.message || 'Network Error'}`);
+    } finally {
+      setLoadingRecommendations(false);
     }
   };
 
@@ -633,14 +698,82 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Job Suggestions for You</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeMoreText}>See More</Text>
-            </TouchableOpacity>
           </View>
-          <View style={styles.emptyState}>
-            <Ionicons name="briefcase-outline" size={60} color="#D0D0D0" />
-            <Text style={styles.emptyText}>Sign in to see personalized suggestions</Text>
-          </View>
+
+          {isAuthenticated ? (
+            <>
+              {/* Skill Selector */}
+              <View style={styles.recommendationInputs}>
+                <Text style={styles.inputLabel}>Select Your Skills *</Text>
+                <SkillSelector
+                  skills={availableSkills}
+                  selectedSkills={selectedSkills}
+                  onSkillsChange={setSelectedSkills}
+                  placeholder="Choose skills to get recommendations..."
+                />
+
+                {/* Get Recommendations Button */}
+                <TouchableOpacity
+                  style={[
+                    styles.getRecommendationsButton,
+                    (selectedSkills.length === 0 || !title) && { opacity: 0.5 }
+                  ]}
+                  onPress={fetchJobRecommendations}
+                  disabled={selectedSkills.length === 0 || !title || loadingRecommendations}
+                >
+                  {loadingRecommendations ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Ionicons name="search" size={20} color="#FFFFFF" />
+                      <Text style={styles.getRecommendationsText}>
+                        Get Recommendations
+                      </Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {/* Recommendations List */}
+              {loadingRecommendations ? (
+                <ActivityIndicator size="large" color="#3DD5DC" style={{ marginVertical: 40 }} />
+              ) : recommendations.length > 0 ? (
+                <View style={styles.recommendationsContainer}>
+                  {recommendations.map((job) => (
+                    <JobRecommendationCard
+                      key={job.job_id}
+                      job={job}
+                      onPress={() => {
+                        // Navigate to job detail
+                        console.log('Navigate to job:', job.job_id);
+                      }}
+                    />
+                  ))}
+                </View>
+              ) : selectedSkills.length > 0 ? (
+                <View style={styles.emptyState}>
+                  <Ionicons name="search-outline" size={60} color="#D0D0D0" />
+                  <Text style={styles.emptyText}>No Recommendations Yet</Text>
+                  <Text style={styles.emptySubText}>
+                    Click "Get Recommendations" to find jobs
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.emptyState}>
+                  <Ionicons name="bulb-outline" size={60} color="#D0D0D0" />
+                  <Text style={styles.emptyText}>Select Skills</Text>
+                  <Text style={styles.emptySubText}>
+                    Choose your skills to get personalized job recommendations
+                  </Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="briefcase-outline" size={60} color="#D0D0D0" />
+              <Text style={styles.emptyText}>Sign in to see personalized suggestions</Text>
+            </View>
+          )}
         </View>
 
         {/* Extra padding for bottom tab bar */}

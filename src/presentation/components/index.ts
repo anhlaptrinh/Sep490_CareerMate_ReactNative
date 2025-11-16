@@ -11,3 +11,7 @@ export { default as AppHeader } from './AppHeader';
 export { default as MenuDrawer } from './MenuDrawer';
 
 export { AppliedJobCard } from './AppliedJobCard';
+
+export { SkillSelector } from './SkillSelector';
+
+export { JobRecommendationCard } from './JobRecommendationCard';

@@ -1,13 +1,16 @@
 export const TYPES = {
   ApiClient: Symbol.for("ApiClient"),
+  PythonApiClient: Symbol.for("PythonApiClient"),
   LoginRepo: Symbol.for("LoginRepo"),
   CandidateRepo: Symbol.for("CandidateRepo"),
   JobRepo: Symbol.for("JobRepo"),
   CompanyRepo: Symbol.for("CompanyRepo"),
   JdSkillRepo: Symbol.for("JdSkillRepo"),
+  AIRepo: Symbol.for("AIRepo"),
   LoginUseCase: Symbol.for("LoginUseCase"),
   LogoutRepo: Symbol.for("LogoutRepo"),
   SignUpRepo: Symbol.for("SignUpRepo"),
   SignUpUseCase: Symbol.for("SignUpUseCase"),
   LogoutUseCase: Symbol.for("LogoutUseCase"),
+  GetJobRecommendationsUseCase: Symbol.for("GetJobRecommendationsUseCase"),
 };
