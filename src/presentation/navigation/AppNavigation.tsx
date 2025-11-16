@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthNavigation from './AuthNavigation';
 import InAppNavigation from './InAppNavigation';
 import NotificationScreen from '../pages/Notification';
+import BlogDetailScreen from '../pages/BlogDetail';
 
 const RootStack = createNativeStackNavigator();
 
@@ -48,6 +49,16 @@ export default function AppNavigation() {
         options={{
           presentation: 'modal',
           animation: 'slide_from_bottom',
+        }}
+      />
+
+      {/* Blog Detail Screen */}
+      <RootStack.Screen
+        name="BlogDetail"
+        component={BlogDetailScreen}
+        options={{
+          presentation: 'card',
+          animation: 'slide_from_right',
         }}
       />
     </RootStack.Navigator>

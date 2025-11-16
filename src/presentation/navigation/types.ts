@@ -26,6 +26,7 @@ export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   MainApp: NavigatorScreenParams<InAppTabParamList>;
   Notification: undefined;
+  BlogDetail: { blogId: number };
 };
 
 // Navigation Prop Types for each navigator

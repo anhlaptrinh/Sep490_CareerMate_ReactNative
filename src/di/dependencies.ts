@@ -16,6 +16,12 @@ import { SignUpUseCase } from "../domain/usecases/SignUpUseCase";
 import { JobRepo, JobRepoImpl } from "../data/repository/job";
 import { CompanyRepo, CompanyRepoImpl } from "../data/repository/company";
 import { JdSkillRepo, JdSkillRepoImpl } from "../data/repository/jdskill";
+import { BlogRepo } from "../data/repository/BlogRepo";
+import { BlogRepoImpl } from "../data/repository/BlogRepoImpl";
+import { GetBlogsUseCase } from "../domain/usecases/GetBlogsUseCase";
+import { GetBlogByIdUseCase } from "../domain/usecases/GetBlogByIdUseCase";
+import { GetBlogsByCategoryUseCase } from "../domain/usecases/GetBlogsByCategoryUseCase";
+import { GetRelatedBlogsUseCase } from "../domain/usecases/GetRelatedBlogsUseCase";
 
 const container = new Container();
 
@@ -30,10 +36,15 @@ container.bind<SignUpRepo>(TYPES.SignUpRepo).to(SignUpRepoImpl).inSingletonScope
 container.bind<JobRepo>(TYPES.JobRepo).to(JobRepoImpl).inSingletonScope();
 container.bind<CompanyRepo>(TYPES.CompanyRepo).to(CompanyRepoImpl).inSingletonScope();
 container.bind<JdSkillRepo>(TYPES.JdSkillRepo).to(JdSkillRepoImpl).inSingletonScope();
+container.bind<BlogRepo>(TYPES.BlogRepo).to(BlogRepoImpl).inSingletonScope();
 
 // UseCase
 container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase).inTransientScope();
 container.bind<SignUpUseCase>(TYPES.SignUpUseCase).to(SignUpUseCase).inTransientScope();
 container.bind<LogoutUseCase>(TYPES.LogoutUseCase).to(LogoutUseCase).inTransientScope();
+container.bind<GetBlogsUseCase>(TYPES.GetBlogsUseCase).to(GetBlogsUseCase).inTransientScope();
+container.bind<GetBlogByIdUseCase>(TYPES.GetBlogByIdUseCase).to(GetBlogByIdUseCase).inTransientScope();
+container.bind<GetBlogsByCategoryUseCase>(TYPES.GetBlogsByCategoryUseCase).to(GetBlogsByCategoryUseCase).inTransientScope();
+container.bind<GetRelatedBlogsUseCase>(TYPES.GetRelatedBlogsUseCase).to(GetRelatedBlogsUseCase).inTransientScope();
 
 export { container };

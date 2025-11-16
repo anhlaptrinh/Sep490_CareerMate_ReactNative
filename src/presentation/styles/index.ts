@@ -4,6 +4,7 @@ export { jobStyles } from './JobStyles';
 export { companyStyles } from './CompanyStyles';
 export { companyDetailStyles } from './CompanyDetailStyles';
 export { blogStyles } from './BlogStyles';
+export { blogDetailStyles } from './BlogDetailStyles';
 export { loginStyles } from './LoginStyles';
 export { signUpStyles } from './SignUpStyles';
 export { profileStyles } from './ProfileStyles';

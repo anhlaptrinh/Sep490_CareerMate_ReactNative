@@ -10,4 +10,11 @@ export const TYPES = {
   SignUpRepo: Symbol.for("SignUpRepo"),
   SignUpUseCase: Symbol.for("SignUpUseCase"),
   LogoutUseCase: Symbol.for("LogoutUseCase"),
+  
+  // Blog
+  BlogRepo: Symbol.for("BlogRepo"),
+  GetBlogsUseCase: Symbol.for("GetBlogsUseCase"),
+  GetBlogByIdUseCase: Symbol.for("GetBlogByIdUseCase"),
+  GetBlogsByCategoryUseCase: Symbol.for("GetBlogsByCategoryUseCase"),
+  GetRelatedBlogsUseCase: Symbol.for("GetRelatedBlogsUseCase"),
 };
