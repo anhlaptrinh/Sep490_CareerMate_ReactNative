@@ -154,6 +154,18 @@ export const blogStyles = StyleSheet.create({
     height: 180,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+  },
+  playButtonOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 12,
   },
   videoOverlayText: {
     fontSize: 18,
@@ -165,11 +177,29 @@ export const blogStyles = StyleSheet.create({
   videoContent: {
     padding: 12,
   },
+  videoCategory: {
+    fontSize: 11,
+    color: '#3DD5DC',
+    fontWeight: '600',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
   videoTitle: {
     fontSize: 15,
     fontWeight: '700',
     color: '#000000',
-    marginBottom: 6,
+    marginBottom: 8,
+  },
+  youtubeTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  youtubeTagText: {
+    fontSize: 11,
+    color: '#FF0000',
+    fontWeight: '500',
   },
   videoMeta: {
     fontSize: 12,

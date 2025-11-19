@@ -19,6 +19,7 @@ import { blogDetailStyles } from '../styles';
 import { useBlogStore } from '../state/useBlogStore';
 import { Blog } from '../../domain/models/Blog';
 import { RootStackParamList } from '../navigation/types';
+import { BlogContentRenderer } from '../components';
 
 type BlogDetailRouteProp = RouteProp<RootStackParamList, 'BlogDetail'>;
 
@@ -311,10 +312,11 @@ export default function BlogDetailScreen() {
 
           {/* Content */}
           <View style={styles.blogContent}>
-            {/* For now, we'll display the content as text. In a real app, you might want to use a HTML renderer */}
-            <Text style={styles.contentText}>
-              {currentBlog.content ? currentBlog.content.replace(/<[^>]*>/g, '') : 'Content not available'} {/* Strip HTML tags for now */}
-            </Text>
+            {currentBlog.content ? (
+              <BlogContentRenderer htmlContent={currentBlog.content} />
+            ) : (
+              <Text style={styles.contentText}>Content not available</Text>
+            )}
           </View>
 
           {/* Tags */}

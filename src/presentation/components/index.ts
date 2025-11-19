@@ -15,3 +15,5 @@ export { AppliedJobCard } from './AppliedJobCard';
 export { SkillSelector } from './SkillSelector';
 
 export { JobRecommendationCard } from './JobRecommendationCard';
+
+export { BlogContentRenderer } from './BlogContentRenderer';

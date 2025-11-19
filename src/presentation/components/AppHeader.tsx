@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import MenuDrawer from './MenuDrawer';
 import { useAuthStore } from '../state/useAuthStore';
+import { useNotificationStore } from '../state/useNotificationStore';
 
 interface AppHeaderProps {
   scrollY?: Animated.Value;
@@ -31,6 +32,18 @@ export default function AppHeader({
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
   const { isAuthenticated, user } = useAuthStore();
+  const { notifications, unreadCount, fetchNotifications, fetchUnreadCount } = useNotificationStore();
+
+  // Load initial notifications when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('🔔 AppHeader: Loading initial notifications...');
+      
+      // Load initial notifications and unread count
+      fetchNotifications({ page: 0, size: 20 });
+      fetchUnreadCount();
+    }
+  }, [isAuthenticated]);
 
   // Fetch avatar from candidate profile
   React.useEffect(() => {
@@ -116,7 +129,15 @@ export default function AppHeader({
               onPress={() => navigation.navigate('Notification')}
             >
               <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
-              <View style={styles.notificationBadge} />
+              {unreadCount > 0 && (
+                <View style={styles.notificationBadge}>
+                  {unreadCount <= 99 && (
+                    <Text style={styles.notificationBadgeText}>
+                      {unreadCount}
+                    </Text>
+                  )}
+                </View>
+              )}
             </TouchableOpacity>
           </View>
         </Animated.View>
@@ -137,7 +158,15 @@ export default function AppHeader({
           onPress={() => navigation.navigate('Notification')}
         >
           <Ionicons name="notifications-outline" size={26} color="#FFFFFF" />
-          <View style={styles.notificationBadge} />
+          {unreadCount > 0 && (
+            <View style={styles.notificationBadge}>
+              {unreadCount <= 99 && (
+                <Text style={styles.notificationBadgeText}>
+                  {unreadCount}
+                </Text>
+              )}
+            </View>
+          )}
         </TouchableOpacity>
       </Animated.View>
 
@@ -239,14 +268,24 @@ const styles = StyleSheet.create({
   },
   notificationBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FF0000',
-    borderWidth: 1,
+    top: 5,
+    right: 5,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#FF4757',
+    borderWidth: 2,
     borderColor: '#3DD5DC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  notificationBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    lineHeight: 12,
   },
   userButton: {
     flexDirection: 'row',

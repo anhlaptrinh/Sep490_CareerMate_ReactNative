@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  Linking,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,6 +23,42 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
 
 const { width: screenWidth } = Dimensions.get('window');
+
+// Hardcoded interesting videos
+const FEATURED_VIDEOS = [
+  {
+    id: '1',
+    title: 'Revolutionizing Java Unit Testing with fully Autonomous AI Diffblue Cover',
+    url: 'https://youtu.be/X8pGlWi4bHA?si=Z5dywsdmhKjusQ1G',
+    thumbnail: 'https://img.youtube.com/vi/X8pGlWi4bHA/maxresdefault.jpg',
+    category: 'Java & Testing',
+    gradient: ['#FF6B6B', '#FFA500'] as [string, string],
+  },
+  {
+    id: '2',
+    title: 'Java in 100 Seconds',
+    url: 'https://youtu.be/l9AzO1FMgM8?si=6O3uLzo7rdtX3fS7',
+    thumbnail: 'https://img.youtube.com/vi/l9AzO1FMgM8/maxresdefault.jpg',
+    category: 'Programming',
+    gradient: ['#667eea', '#764ba2'] as [string, string],
+  },
+  {
+    id: '3',
+    title: 'Kotlin in 100 Seconds',
+    url: 'https://youtu.be/xT8oP0wy-A0?si=G_yJZ4vyE7UZthnF',
+    thumbnail: 'https://img.youtube.com/vi/xT8oP0wy-A0/maxresdefault.jpg',
+    category: 'Programming',
+    gradient: ['#4ECDC4', '#44A08D'] as [string, string],
+  },
+  {
+    id: '4',
+    title: 'React Native vs Flutter - I built the same chat app with both',
+    url: 'https://youtu.be/X8ipUgXH6jw?si=AHIILRK1s5f5KRo0',
+    thumbnail: 'https://img.youtube.com/vi/X8ipUgXH6jw/maxresdefault.jpg',
+    category: 'Mobile Development',
+    gradient: ['#f093fb', '#f5576c'] as [string, string],
+  },
+];
 
 export default function BlogScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -82,6 +119,35 @@ export default function BlogScreen() {
 
   const handleBlogPress = (blog: Blog) => {
     navigation.navigate('BlogDetail', { blogId: blog.id });
+  };
+
+  const openYouTubeVideo = async (url: string) => {
+    try {
+      // Extract video ID from URL
+      const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([^?&]+)/)?.[1];
+      
+      if (videoId) {
+        // Try YouTube app first
+        const youtubeAppUrl = `vnd.youtube://${videoId}`;
+        const canOpenApp = await Linking.canOpenURL(youtubeAppUrl);
+        
+        if (canOpenApp) {
+          await Linking.openURL(youtubeAppUrl);
+          return;
+        }
+      }
+      
+      // Fallback to browser
+      await Linking.openURL(url);
+    } catch (error) {
+      console.error('Error opening YouTube video:', error);
+      // Last resort - try direct browser open
+      try {
+        await Linking.openURL(url);
+      } catch (e) {
+        console.error('Failed to open URL in browser:', e);
+      }
+    }
   };
 
   const clearSearch = () => {
@@ -344,7 +410,10 @@ export default function BlogScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>CareerMate TV</Text>
-            <TouchableOpacity style={styles.youtubeButton}>
+            <TouchableOpacity 
+              style={styles.youtubeButton}
+              onPress={() => openYouTubeVideo('https://www.youtube.com')}
+            >
               <Text style={styles.youtubeButtonText}>Open Youtube</Text>
               <Ionicons name="logo-youtube" size={20} color="#FF0000" />
             </TouchableOpacity>
@@ -355,94 +424,34 @@ export default function BlogScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.horizontalScroll}
           >
-            <TouchableOpacity style={styles.videoCard}>
-              <LinearGradient
-                colors={['#667eea', '#764ba2']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.videoThumbnail}
+            {FEATURED_VIDEOS.map((video, index) => (
+              <TouchableOpacity 
+                key={video.id} 
+                style={styles.videoCard}
+                onPress={() => openYouTubeVideo(video.url)}
               >
-                <Ionicons name="play-circle" size={80} color="#FFFFFF" />
-                <Text style={styles.videoOverlayText}>Kotlin Tips & Tricks</Text>
-              </LinearGradient>
-              <View style={styles.videoContent}>
-                <Text style={styles.videoTitle} numberOfLines={2}>
-                  CareerMate TV - Ep 30 | Kotlin Essential Skills
-                </Text>
-                <Text style={styles.videoMeta}>CareerMate TV • 420 views • 09-01-2021</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.videoCard}>
-              <LinearGradient
-                colors={['#f093fb', '#f5576c']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.videoThumbnail}
-              >
-                <Ionicons name="play-circle" size={80} color="#FFFFFF" />
-                <Text style={styles.videoOverlayText}>React Native Guide</Text>
-              </LinearGradient>
-              <View style={styles.videoContent}>
-                <Text style={styles.videoTitle} numberOfLines={2}>
-                  Building Mobile Apps with React Native
-                </Text>
-                <Text style={styles.videoMeta}>CareerMate TV • 350 views • 08-15-2021</Text>
-              </View>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-
-        {/* CareerMate TV Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>CareerMate TV</Text>
-            <TouchableOpacity style={styles.youtubeButton}>
-              <Text style={styles.youtubeButtonText}>Open Youtube</Text>
-              <Ionicons name="logo-youtube" size={20} color="#FF0000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScroll}
-          >
-            <TouchableOpacity style={styles.videoCard}>
-              <LinearGradient
-                colors={['#667eea', '#764ba2']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.videoThumbnail}
-              >
-                <Ionicons name="play-circle" size={80} color="#FFFFFF" />
-                <Text style={styles.videoOverlayText}>Kotlin Tips & Tricks</Text>
-              </LinearGradient>
-              <View style={styles.videoContent}>
-                <Text style={styles.videoTitle} numberOfLines={2}>
-                  CareerMate TV - Ep 30 | Kotlin Essential Skills
-                </Text>
-                <Text style={styles.videoMeta}>CareerMate TV • 420 views • 09-01-2021</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.videoCard}>
-              <LinearGradient
-                colors={['#f093fb', '#f5576c']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.videoThumbnail}
-              >
-                <Ionicons name="play-circle" size={80} color="#FFFFFF" />
-                <Text style={styles.videoOverlayText}>React Native Guide</Text>
-              </LinearGradient>
-              <View style={styles.videoContent}>
-                <Text style={styles.videoTitle} numberOfLines={2}>
-                  Building Mobile Apps with React Native
-                </Text>
-                <Text style={styles.videoMeta}>CareerMate TV • 350 views • 08-15-2021</Text>
-              </View>
-            </TouchableOpacity>
+                <View style={styles.videoThumbnail}>
+                  <Image 
+                    source={{ uri: video.thumbnail }} 
+                    style={{ width: '100%', height: '100%', borderRadius: 12 }}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.playButtonOverlay}>
+                    <Ionicons name="play-circle" size={60} color="#FFFFFF" />
+                  </View>
+                </View>
+                <View style={styles.videoContent}>
+                  <Text style={styles.videoCategory}>{video.category}</Text>
+                  <Text style={styles.videoTitle} numberOfLines={2}>
+                    {video.title}
+                  </Text>
+                  <View style={styles.youtubeTag}>
+                    <Ionicons name="logo-youtube" size={14} color="#FF0000" />
+                    <Text style={styles.youtubeTagText}>Watch on YouTube</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
         </View>
 

@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthNavigation from './AuthNavigation';
 import InAppNavigation from './InAppNavigation';
 import NotificationScreen from '../pages/Notification';
+import NotificationDetailScreen from '../pages/NotificationDetail';
+import { NotificationTestPage } from '../pages/NotificationTest';
 import BlogDetailScreen from '../pages/BlogDetail';
 
 const RootStack = createNativeStackNavigator();
@@ -49,6 +51,28 @@ export default function AppNavigation() {
         options={{
           presentation: 'modal',
           animation: 'slide_from_bottom',
+        }}
+      />
+
+      {/* Notification Test Screen */}
+      <RootStack.Screen
+        name="NotificationTest"
+        component={NotificationTestPage}
+        options={{
+          presentation: 'card',
+          animation: 'slide_from_right',
+          headerShown: true,
+          title: 'Notification Test',
+        }}
+      />
+
+      {/* Notification Detail Screen */}
+      <RootStack.Screen
+        name="NotificationDetail"
+        component={NotificationDetailScreen}
+        options={{
+          presentation: 'card',
+          animation: 'slide_from_right',
         }}
       />
 

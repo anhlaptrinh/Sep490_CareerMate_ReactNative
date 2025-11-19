@@ -123,8 +123,8 @@ export class ApiClient {
   }
 
   // DELETE
-  async delete<T>(url: string): Promise<T> {
-    const { data } = await this.instance.delete<T>(url);
+  async delete<T>(url: string, config?: any): Promise<T> {
+    const { data } = await this.instance.delete<T>(url, config);
     return data;
   }
 

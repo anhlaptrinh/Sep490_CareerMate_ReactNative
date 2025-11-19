@@ -39,7 +39,7 @@ const tools = [
   },
 ];
 
-export default function ToolsScreen() {
+export default function ToolsScreen({ navigation }: { navigation: any }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const styles = toolsStyles;
@@ -90,6 +90,27 @@ export default function ToolsScreen() {
             </View>
           </View>
         ))}
+
+        {/* Test Tools Section */}
+        <View style={styles.testSection}>
+          <Text style={styles.testSectionTitle}>🧪 Development & Testing</Text>
+          
+          <TouchableOpacity
+            style={styles.testButton}
+            onPress={() => navigation.navigate('NotificationTest')}
+          >
+            <View style={styles.testButtonContent}>
+              <MaterialCommunityIcons name="bell-ring" size={24} color="#3DD5DC" />
+              <View style={styles.testButtonText}>
+                <Text style={styles.testButtonTitle}>Notification System Test</Text>
+                <Text style={styles.testButtonDescription}>
+                  Test candidate notification functionality
+                </Text>
+              </View>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+        </View>
 
         {/* Extra padding for bottom tab bar */}
         <View style={{ height: Platform.OS === 'ios' ? 20 : 10 }} />

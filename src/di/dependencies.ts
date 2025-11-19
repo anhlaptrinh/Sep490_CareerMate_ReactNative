@@ -28,6 +28,16 @@ import { GetBlogsByCategoryUseCase } from "../domain/usecases/GetBlogsByCategory
 import { GetRelatedBlogsUseCase } from "../domain/usecases/GetRelatedBlogsUseCase";
 import { SearchBlogsUseCase } from "../domain/usecases/SearchBlogsUseCase";
 
+// Notification imports
+import { NotificationRepo } from "../data/repository/NotificationRepo";
+import { NotificationRepoImpl } from "../data/repository/NotificationRepoImpl";
+import { GetNotificationsUseCase } from "../domain/usecases/GetNotificationsUseCase";
+import { GetUnreadCountUseCase } from "../domain/usecases/GetUnreadCountUseCase";
+import { MarkNotificationAsReadUseCase } from "../domain/usecases/MarkNotificationAsReadUseCase";
+import { DeleteNotificationUseCase } from "../domain/usecases/DeleteNotificationUseCase";
+import { GetNotificationByIdUseCase } from "../domain/usecases/GetNotificationByIdUseCase";
+import { MarkAllNotificationsAsReadUseCase } from "../domain/usecases/MarkAllNotificationsAsReadUseCase";
+
 const container = new Container();
 
 // API
@@ -44,6 +54,7 @@ container.bind<CompanyRepo>(TYPES.CompanyRepo).to(CompanyRepoImpl).inSingletonSc
 container.bind<JdSkillRepo>(TYPES.JdSkillRepo).to(JdSkillRepoImpl).inSingletonScope();
 container.bind<AIRepo>(TYPES.AIRepo).to(AIRepoImpl).inSingletonScope();
 container.bind<BlogRepo>(TYPES.BlogRepo).to(BlogRepoImpl).inSingletonScope();
+container.bind<NotificationRepo>(TYPES.NotificationRepo).to(NotificationRepoImpl).inSingletonScope();
 
 // UseCase
 container.bind<LoginUseCase>(TYPES.LoginUseCase).to(LoginUseCase).inTransientScope();
@@ -55,5 +66,13 @@ container.bind<GetBlogByIdUseCase>(TYPES.GetBlogByIdUseCase).to(GetBlogByIdUseCa
 container.bind<GetBlogsByCategoryUseCase>(TYPES.GetBlogsByCategoryUseCase).to(GetBlogsByCategoryUseCase).inTransientScope();
 container.bind<GetRelatedBlogsUseCase>(TYPES.GetRelatedBlogsUseCase).to(GetRelatedBlogsUseCase).inTransientScope();
 container.bind<SearchBlogsUseCase>(TYPES.SearchBlogsUseCase).to(SearchBlogsUseCase).inTransientScope();
+
+// Notification Use Cases
+container.bind<GetNotificationsUseCase>(TYPES.GetNotificationsUseCase).to(GetNotificationsUseCase).inTransientScope();
+container.bind<GetUnreadCountUseCase>(TYPES.GetUnreadCountUseCase).to(GetUnreadCountUseCase).inTransientScope();
+container.bind<MarkNotificationAsReadUseCase>(TYPES.MarkNotificationAsReadUseCase).to(MarkNotificationAsReadUseCase).inTransientScope();
+container.bind<DeleteNotificationUseCase>(TYPES.DeleteNotificationUseCase).to(DeleteNotificationUseCase).inTransientScope();
+container.bind<GetNotificationByIdUseCase>(TYPES.GetNotificationByIdUseCase).to(GetNotificationByIdUseCase).inTransientScope();
+container.bind<MarkAllNotificationsAsReadUseCase>(TYPES.MarkAllNotificationsAsReadUseCase).to(MarkAllNotificationsAsReadUseCase).inTransientScope();
 
 export { container };

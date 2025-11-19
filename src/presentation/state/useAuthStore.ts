@@ -69,6 +69,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             avatar: null, // Default avatar - can be customized later
           } : null,
         });
+
+        // ✅ Initialize push notifications AFTER successful login
+        try {
+          const PushNotificationService = (await import('../../services/PushNotificationService')).default;
+          await PushNotificationService.initialize();
+          console.log('✅ Push notifications initialized');
+        } catch (pushError) {
+          console.error('⚠️ Push notification initialization failed:', pushError);
+          // Don't fail login if push notifications fail
+        }
       } else {
         throw new Error('Authentication failed');
       }
@@ -92,6 +102,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
     
     try {
+      // ✅ Unregister push notifications BEFORE logout
+      try {
+        const PushNotificationService = (await import('../../services/PushNotificationService')).default;
+        await PushNotificationService.unregister();
+        console.log('✅ Push notifications unregistered');
+      } catch (pushError) {
+        console.error('⚠️ Push notification unregister failed:', pushError);
+        // Don't fail logout if push unregister fails
+      }
+
       const logoutUseCase = container.get<LogoutUseCase>(TYPES.LogoutUseCase);
       await logoutUseCase.execute();
       
@@ -136,6 +156,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             avatar: null,
           } : null,
         });
+
+        // ✅ Re-initialize push notifications if user is already logged in
+        try {
+          const PushNotificationService = (await import('../../services/PushNotificationService')).default;
+          await PushNotificationService.initialize();
+          console.log('✅ Push notifications re-initialized after app restart');
+        } catch (pushError) {
+          console.error('⚠️ Push notification re-initialization failed:', pushError);
+          // Don't fail checkAuth if push notifications fail
+        }
       } else {
         set({
           isAuthenticated: false,

@@ -21,4 +21,13 @@ export const TYPES = {
   GetBlogsByCategoryUseCase: Symbol.for("GetBlogsByCategoryUseCase"),
   GetRelatedBlogsUseCase: Symbol.for("GetRelatedBlogsUseCase"),
   SearchBlogsUseCase: Symbol.for("SearchBlogsUseCase"),
+
+  // Notifications
+  NotificationRepo: Symbol.for("NotificationRepo"),
+  GetNotificationsUseCase: Symbol.for("GetNotificationsUseCase"),
+  GetUnreadCountUseCase: Symbol.for("GetUnreadCountUseCase"),
+  MarkNotificationAsReadUseCase: Symbol.for("MarkNotificationAsReadUseCase"),
+  DeleteNotificationUseCase: Symbol.for("DeleteNotificationUseCase"),
+  GetNotificationByIdUseCase: Symbol.for("GetNotificationByIdUseCase"),
+  MarkAllNotificationsAsReadUseCase: Symbol.for("MarkAllNotificationsAsReadUseCase"),
 };
